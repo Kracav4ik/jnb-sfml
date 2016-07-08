@@ -1,7 +1,11 @@
 #include <SFML/Graphics.hpp>
 
+#include "level.h"
+
 int main() {
-    sf::RenderWindow  window(sf::VideoMode(800, 600), "My window");
+    sf::RenderWindow  window(sf::VideoMode(800, 512), "My window");
+
+    Level level;
 
     window.setPosition(sf::Vector2i(45, 50));
 
@@ -13,6 +17,10 @@ int main() {
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed) {
                 window.close();
+            } else if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Escape) {
+                    window.close();
+                }
             }
         }
 
@@ -20,7 +28,7 @@ int main() {
         window.clear(sf::Color::Black);
 
         // draw everything here...
-        // window.draw(...);
+        level.draw(window);
 
         // end the current frame
         window.display();

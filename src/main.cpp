@@ -1,11 +1,13 @@
 #include <SFML/Graphics.hpp>
 
 #include "level.h"
+#include "rabbit.h"
 
 int main() {
     sf::RenderWindow  window(sf::VideoMode(800, 512), "My window");
 
     Level level;
+    Rabbit rabbit;
 
     window.setPosition(sf::Vector2i(45, 50));
 
@@ -21,6 +23,15 @@ int main() {
                 if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
                 }
+                if (event.key.code == sf::Keyboard::W) {
+                    rabbit.jump();
+                }
+                if (event.key.code == sf::Keyboard::A) {
+                    rabbit.accel_left();
+                }
+                if (event.key.code == sf::Keyboard::D) {
+                    rabbit.accel_right();
+                }
             }
         }
 
@@ -29,6 +40,7 @@ int main() {
 
         // draw everything here...
         level.draw(window);
+        rabbit.draw(window);
 
         // end the current frame
         window.display();

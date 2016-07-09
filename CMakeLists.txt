@@ -4,7 +4,7 @@ project(jnb_sfml)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(EXECUTABLE_NAME "jnb_sfml")
-set(SOURCE_FILES src/main.cpp src/level.cpp src/level.h src/rabbit.cpp src/rabbit.h)
+set(SOURCE_FILES src/main.cpp src/level.cpp src/level.h src/rabbit.cpp src/rabbit.h src/utils.cpp src/utils.h)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})

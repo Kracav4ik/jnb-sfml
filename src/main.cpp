@@ -7,6 +7,7 @@ int main() {
     sf::RenderWindow  window(sf::VideoMode(800, 512), "My window");
 
     Level level;
+    level.print();
     Rabbit rabbit;
 
     window.setPosition(sf::Vector2i(45, 50));

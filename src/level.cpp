@@ -1,11 +1,47 @@
 #include "level.h"
+#include "utils.h"
 
-#include <SFML/Graphics.hpp>
+Level::Level() {
+    for (int x = 0; x < SIZE_X; x += 1) {
+        for (int y = 0; y < SIZE_Y; y += 1) {
+            if (x == 0 || y == 0 || x == SIZE_X - 1 || y == SIZE_Y - 1) {
+                geometry[x][y] = '#';
+            } else {
+                geometry[x][y] = ' ';
+            }
+        }
+    }
+
+    for (int i = 1; i < 4; i += 1) {
+        geometry[SIZE_X / 2][SIZE_Y - i] = '#';
+    }
+
+    for (int i = - 3; i < 4; i += 1) {
+        geometry[SIZE_X / 2 + i][SIZE_Y - 4] = '#';
+    }
+}
 
 void Level::draw(sf::RenderWindow& window) {
-    sf::RectangleShape rectangle(sf::Vector2f(800, 512));
-    rectangle.setFillColor(sf::Color(0, 109, 214));
+    draw_rect(window, sf::Vector2f(), sf::Vector2f(800, 512), sf::Color(0, 109, 214));
 
-    window.draw(rectangle);
+    for (int x = 0; x < SIZE_X; x += 1) {
+        for (int y = 0; y < SIZE_Y; y += 1) {
+            char c = geometry[x][y];
+            if (c == '#') {
+                draw_rect(window, sf::Vector2f(CELL_SIZE * x,     CELL_SIZE * y),     sf::Vector2f(CELL_SIZE,     CELL_SIZE),     sf::Color(164, 81, 0));
+                draw_rect(window, sf::Vector2f(CELL_SIZE * x + 1, CELL_SIZE * y + 1), sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1), sf::Color(82, 16, 0));
+                draw_rect(window, sf::Vector2f(CELL_SIZE * x + 1, CELL_SIZE * y + 1), sf::Vector2f(CELL_SIZE - 2, CELL_SIZE - 2), sf::Color(123, 45, 0));
+            }
+        }
+    }
+}
+
+void Level::print() {
+    for (int y = 0; y < SIZE_Y; y += 1) {
+        for (int x = 0; x < SIZE_X; x += 1) {
+            printf("%c", geometry[x][y]);
+        }
+        printf("\n");
+    }
 }
 

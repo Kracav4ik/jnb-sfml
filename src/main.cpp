@@ -10,6 +10,7 @@ int main() {
     Rabbit rabbit;
 
     window.setPosition(sf::Vector2i(45, 50));
+    window.setKeyRepeatEnabled(false);
 
     // run the program as long as the window is open
     while (window.isOpen()) {
@@ -23,16 +24,16 @@ int main() {
                 if (event.key.code == sf::Keyboard::Escape) {
                     window.close();
                 }
-                if (event.key.code == sf::Keyboard::W) {
-                    rabbit.jump();
-                }
-                if (event.key.code == sf::Keyboard::A) {
-                    rabbit.accel_left();
-                }
-                if (event.key.code == sf::Keyboard::D) {
-                    rabbit.accel_right();
-                }
             }
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+            rabbit.jump();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            rabbit.accel_left();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            rabbit.accel_right();
         }
 
         // clear the window with black color

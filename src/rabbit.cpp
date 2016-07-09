@@ -11,15 +11,15 @@ void Rabbit::draw(sf::RenderWindow& window) {
 }
 
 void Rabbit::jump() {
-    position.y -= 1;
+    position.y -= 0.1;
 }
 
 void Rabbit::accel_left() {
-    position.x -= 1;
+    position.x -= 0.1;
 }
 
 void Rabbit::accel_right() {
-    position.x += 1;
+    position.x += 0.1;
 }
 
 Rabbit::Rabbit()

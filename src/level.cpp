@@ -28,9 +28,9 @@ void Level::draw(sf::RenderWindow& window) {
         for (int y = 0; y < SIZE_Y; y += 1) {
             char c = geometry[x][y];
             if (c == '#') {
-                draw_rect(window, sf::Vector2f(CELL_SIZE * x,     CELL_SIZE * y),     sf::Vector2f(CELL_SIZE,     CELL_SIZE),     sf::Color(164, 81, 0));
-                draw_rect(window, sf::Vector2f(CELL_SIZE * x + 1, CELL_SIZE * y + 1), sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1), sf::Color(82, 16, 0));
-                draw_rect(window, sf::Vector2f(CELL_SIZE * x + 1, CELL_SIZE * y + 1), sf::Vector2f(CELL_SIZE - 2, CELL_SIZE - 2), sf::Color(123, 45, 0));
+                draw_rect(window, sf::Vector2f(CELL_SIZE.x * x,     CELL_SIZE.y * y),                  CELL_SIZE,                         sf::Color(164, 81, 0));
+                draw_rect(window, sf::Vector2f(CELL_SIZE.x * x + 1, CELL_SIZE.y * y + 1), sf::Vector2f(CELL_SIZE.x - 1, CELL_SIZE.y - 1), sf::Color(82, 16, 0));
+                draw_rect(window, sf::Vector2f(CELL_SIZE.x * x + 1, CELL_SIZE.y * y + 1), sf::Vector2f(CELL_SIZE.x - 2, CELL_SIZE.y - 2), sf::Color(123, 45, 0));
             }
         }
     }
@@ -45,3 +45,17 @@ void Level::print() {
     }
 }
 
+bool Level::intersects(const sf::FloatRect& rect) {
+    for (int x = 0; x < SIZE_X; x += 1) {
+        for (int y = 0; y < SIZE_Y; y += 1) {
+            char c = geometry[x][y];
+            if (c == '#') {
+                sf::FloatRect cell_rect(sf::Vector2f(CELL_SIZE.x * x, CELL_SIZE.y * y), CELL_SIZE);
+                if (cell_rect.intersects(rect)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}

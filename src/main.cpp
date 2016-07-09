@@ -9,12 +9,19 @@ int main() {
     Level level;
     level.print();
     Rabbit rabbit;
+    sf::Vector2f gravity(0, 450);
 
     window.setPosition(sf::Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);
 
+    sf::Clock clock;
+    const float MAX_FPS = 600;
+
     // run the program as long as the window is open
     while (window.isOpen()) {
+        sf::Int64 useconds = clock.restart().asMicroseconds();
+        float elapsed = useconds * 1e-6f;
+
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -37,6 +44,14 @@ int main() {
             rabbit.accel_right();
         }
 
+        // process physics
+        rabbit.speed += gravity * 0.5f * elapsed;
+        rabbit.position += rabbit.speed * elapsed;
+        rabbit.speed += gravity * 0.5f * elapsed;
+        if (level.intersects(rabbit.get_rect())) {
+            rabbit.speed = sf::Vector2f();
+        }
+
         // clear the window with black color
         window.clear(sf::Color::Black);
 
@@ -46,6 +61,11 @@ int main() {
 
         // end the current frame
         window.display();
+
+        float sleep_time = 1/MAX_FPS - elapsed;
+        if (sleep_time > 0) {
+            sf::sleep(sf::microseconds((sf::Int64)(sleep_time * 1e6)));
+        }
     }
 
     return 0;

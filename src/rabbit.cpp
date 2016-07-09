@@ -3,7 +3,7 @@
 #include "utils.h"
 
 void Rabbit::draw(sf::RenderWindow& window) {
-    draw_rect(window, position, sf::Vector2f(32, 32), sf::Color(222, 190, 140));
+    draw_rect(window, position, RABBIT_SIZE, sf::Color(222, 190, 140));
 }
 
 void Rabbit::jump() {
@@ -21,4 +21,8 @@ void Rabbit::accel_right() {
 Rabbit::Rabbit()
     : position(400, 300)
 {
+}
+
+sf::FloatRect Rabbit::get_rect() const {
+    return sf::FloatRect(position, RABBIT_SIZE);
 }

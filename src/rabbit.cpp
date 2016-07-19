@@ -19,10 +19,6 @@ void Rabbit::accel_right() {
 }
 
 Rabbit::Rabbit()
-    : position(400, 300)
+    : position(400, 300), params(speed, position, RABBIT_SIZE)
 {
-}
-
-sf::FloatRect Rabbit::get_rect() const {
-    return sf::FloatRect(position, RABBIT_SIZE);
 }

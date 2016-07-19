@@ -20,7 +20,7 @@ struct Level {
 
     void print();
 
-    bool intersects(const sf::FloatRect& rect);
+    bool intersects(sf::FloatRect rect, std::vector<sf::FloatRect>& vector);
 };
 
 #endif //JNB_SFML_LEVEL_H

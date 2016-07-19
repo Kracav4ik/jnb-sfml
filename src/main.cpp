@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 #include "level.h"
 #include "rabbit.h"
@@ -15,7 +16,7 @@ int main() {
     window.setKeyRepeatEnabled(false);
 
     sf::Clock clock;
-    const float MAX_FPS = 600;
+    const float MAX_FPS = 10;
 
     // run the program as long as the window is open
     while (window.isOpen()) {
@@ -48,7 +49,9 @@ int main() {
         rabbit.speed += gravity * 0.5f * elapsed;
         rabbit.position += rabbit.speed * elapsed;
         rabbit.speed += gravity * 0.5f * elapsed;
-        if (level.intersects(rabbit.get_rect())) {
+        std::vector<sf::FloatRect> collised;
+        if (level.intersects(rabbit.params.get_rect(), collised)) {
+
             rabbit.speed = sf::Vector2f();
         }
 

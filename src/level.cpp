@@ -45,17 +45,19 @@ void Level::print() {
     }
 }
 
-bool Level::intersects(const sf::FloatRect& rect) {
+bool Level::intersects(sf::FloatRect rect, std::vector<sf::FloatRect>& vector) {
+    bool b = false;
     for (int x = 0; x < SIZE_X; x += 1) {
         for (int y = 0; y < SIZE_Y; y += 1) {
             char c = geometry[x][y];
             if (c == '#') {
                 sf::FloatRect cell_rect(sf::Vector2f(CELL_SIZE.x * x, CELL_SIZE.y * y), CELL_SIZE);
                 if (cell_rect.intersects(rect)) {
-                    return true;
+                    vector.push_back(rect);
+                    b = true;
                 }
             }
         }
     }
-    return false;
+    return b;
 }

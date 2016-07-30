@@ -45,7 +45,7 @@ void Level::print() {
     }
 }
 
-bool Level::intersects(sf::FloatRect rect, std::vector<sf::FloatRect>& vector) {
+bool Level::intersects(const sf::FloatRect& rect, std::vector<sf::FloatRect>& vector) {
     bool b = false;
     for (int x = 0; x < SIZE_X; x += 1) {
         for (int y = 0; y < SIZE_Y; y += 1) {

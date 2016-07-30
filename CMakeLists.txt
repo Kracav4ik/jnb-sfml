@@ -7,7 +7,7 @@ set(EXECUTABLE_NAME "jnb_sfml")
 set(SOURCE_FILES src/main.cpp src/level.cpp src/level.h src/rabbit.cpp src/rabbit.h src/utils.cpp src/utils.h src/params.cpp src/params.h)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
-add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES} src/params.cpp src/params.h)
+add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
 
 set(SFML_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/libs/SFML-2.3.2")
 set(CMAKE_MODULE_PATH "${SFML_ROOT}/cmake/Modules" ${CMAKE_MODULE_PATH})

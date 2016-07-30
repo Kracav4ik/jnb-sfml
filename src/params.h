@@ -9,7 +9,7 @@ struct Params {
     Vector2f _position;
     Vector2f _size;
 
-    Params(Vector2f position=Vector2f(), Vector2f speed=Vector2f(), Vector2f size = Vector2f());
+    Params(const Vector2f& position = Vector2f(), const Vector2f& speed = Vector2f(), const Vector2f& size = Vector2f());
 
     Vector2f position() const;
 

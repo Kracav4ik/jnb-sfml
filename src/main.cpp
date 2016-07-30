@@ -49,8 +49,8 @@ int main() {
         rabbit.speed += gravity * 0.5f * elapsed;
         rabbit.position += rabbit.speed * elapsed;
         rabbit.speed += gravity * 0.5f * elapsed;
-        std::vector<sf::FloatRect> collised;
-        if (level.intersects(rabbit.params.get_rect(), collised)) {
+        std::vector<sf::FloatRect> collided;
+        if (level.intersects(rabbit.params.get_rect(), collided)) {
 
             rabbit.speed = sf::Vector2f();
         }

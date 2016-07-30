@@ -1,7 +1,7 @@
 #include "params.h"
 
 
-Params::Params(Vector2f position, Vector2f speed, Vector2f size)
+Params::Params(const Vector2f& position, const Vector2f& speed, const Vector2f& size)
 :_position(position), _speed(speed), _size(size)
 {
 }

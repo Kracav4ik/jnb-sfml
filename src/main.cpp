@@ -7,7 +7,7 @@
 
 using namespace sf;
 
-int GRAVITY = 350;
+int GRAVITY = 1500;
 
 int main() {
     RenderWindow  window(VideoMode(800, 512), "My window");
@@ -55,10 +55,10 @@ int main() {
         next_params._speed += gravity * 0.5f * elapsed;
         next_params._position += next_params._speed * elapsed;
         next_params._speed += gravity * 0.5f * elapsed;
-        std::vector<FloatRect> collised;
-        if (level.intersects(next_params.get_rect(), collised)) {
-            for (int i = 0; i < collised.size(); i += 1) {
-                FloatRect rect = collised[i];
+        std::vector<FloatRect> collided;
+        if (level.intersects(next_params.get_rect(), collided)) {
+            for (int i = 0; i < collided.size(); i += 1) {
+                FloatRect rect = collided[i];
                 if (fabsf(next_params.position().x - rect.left) >= fabsf(next_params.position().y - rect.top)) {
                     next_params._speed.x = 0;
                     if (CELL_SIZE.x > next_params.position().x - rect.left + CELL_SIZE.x > 0) {

@@ -7,7 +7,9 @@ void Rabbit::draw(RenderWindow& window) const {
 }
 
 void Rabbit::jump() {
-    params._speed.y = -200;
+    if (params._speed.y >= -50) {
+        params._speed.y = -700;
+    }
 }
 
 void Rabbit::accel_left() {

@@ -69,9 +69,9 @@ int main() {
                         log("ni\n");
                     }
                 } else {
+                    next_params._speed.y = 0;
                     if (CELL_SIZE.y > next_params.position().y - rect.top + CELL_SIZE.y > 0) {
                         next_params._position.y = rect.top - CELL_SIZE.y;
-                        next_params._speed.y = 0;
                         log("san\n");
                     } else {
                         next_params._position.y = rect.top + CELL_SIZE.y;

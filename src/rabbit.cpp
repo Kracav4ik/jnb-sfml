@@ -2,23 +2,23 @@
 #include "rabbit.h"
 #include "utils.h"
 
-void Rabbit::draw(sf::RenderWindow& window) {
-    draw_rect(window, position, RABBIT_SIZE, sf::Color(222, 190, 140));
+void Rabbit::draw(RenderWindow& window) const {
+    draw_rect(window, params.position(), RABBIT_SIZE, Color(222, 190, 140));
 }
 
 void Rabbit::jump() {
-    position.y -= 0.3;
+    params._speed.y = -200;
 }
 
 void Rabbit::accel_left() {
-    position.x -= 0.3;
+    params._speed.x = -100;
 }
 
 void Rabbit::accel_right() {
-    position.x += 0.3;
+    params._speed.x = 100;
 }
 
 Rabbit::Rabbit()
-    : position(400, 300), params(speed, position, RABBIT_SIZE)
+    : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE)
 {
 }

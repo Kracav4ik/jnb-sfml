@@ -1,5 +1,6 @@
 #include "level.h"
 #include "utils.h"
+using namespace sf;
 
 Level::Level() {
     for (int x = 0; x < SIZE_X; x += 1) {
@@ -21,16 +22,18 @@ Level::Level() {
     }
 }
 
-void Level::draw(sf::RenderWindow& window) {
-    draw_rect(window, sf::Vector2f(), sf::Vector2f(800, 512), sf::Color(0, 109, 214));
+void Level::draw(RenderWindow& window) {
+    draw_rect(window, Vector2f(), Vector2f(800, 512), Color(0, 109, 214));
 
     for (int x = 0; x < SIZE_X; x += 1) {
         for (int y = 0; y < SIZE_Y; y += 1) {
             char c = geometry[x][y];
             if (c == '#') {
-                draw_rect(window, sf::Vector2f(CELL_SIZE.x * x,     CELL_SIZE.y * y),                  CELL_SIZE,                         sf::Color(164, 81, 0));
-                draw_rect(window, sf::Vector2f(CELL_SIZE.x * x + 1, CELL_SIZE.y * y + 1), sf::Vector2f(CELL_SIZE.x - 1, CELL_SIZE.y - 1), sf::Color(82, 16, 0));
-                draw_rect(window, sf::Vector2f(CELL_SIZE.x * x + 1, CELL_SIZE.y * y + 1), sf::Vector2f(CELL_SIZE.x - 2, CELL_SIZE.y - 2), sf::Color(123, 45, 0));
+                Vector2f d1(1, 1);
+                Vector2f pos(CELL_SIZE.x * x, CELL_SIZE.y * y);
+                draw_rect(window, pos,      CELL_SIZE,          Color(164, 81, 0));
+                draw_rect(window, pos + d1, CELL_SIZE - d1,     Color(82, 16, 0));
+                draw_rect(window, pos + d1, CELL_SIZE - 2.f*d1, Color(123, 45, 0));
             }
         }
     }
@@ -45,15 +48,15 @@ void Level::print() {
     }
 }
 
-bool Level::intersects(const sf::FloatRect& rect, std::vector<sf::FloatRect>& vector) {
+bool Level::intersects(const FloatRect& rect, std::vector<FloatRect>& vector) {
     bool b = false;
     for (int x = 0; x < SIZE_X; x += 1) {
         for (int y = 0; y < SIZE_Y; y += 1) {
             char c = geometry[x][y];
             if (c == '#') {
-                sf::FloatRect cell_rect(sf::Vector2f(CELL_SIZE.x * x, CELL_SIZE.y * y), CELL_SIZE);
+                FloatRect cell_rect(Vector2f(CELL_SIZE.x * x, CELL_SIZE.y * y), CELL_SIZE);
                 if (cell_rect.intersects(rect)) {
-                    vector.push_back(rect);
+                    vector.push_back(cell_rect);
                     b = true;
                 }
             }

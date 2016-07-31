@@ -3,60 +3,89 @@
 
 #include "level.h"
 #include "rabbit.h"
+#include "debug.h"
+
+using namespace sf;
+
+int GRAVITY = 350;
 
 int main() {
-    sf::RenderWindow  window(sf::VideoMode(800, 512), "My window");
+    RenderWindow  window(VideoMode(800, 512), "My window");
 
     Level level;
     level.print();
     Rabbit rabbit;
-    sf::Vector2f gravity(0, 450);
+    Vector2f gravity(0, GRAVITY);
 
-    window.setPosition(sf::Vector2i(45, 50));
+    window.setPosition(Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);
 
-    sf::Clock clock;
-    const float MAX_FPS = 10;
+    Clock clock;
+    const float MAX_FPS = 30;
 
     // run the program as long as the window is open
     while (window.isOpen()) {
-        sf::Int64 useconds = clock.restart().asMicroseconds();
+        Int64 useconds = clock.restart().asMicroseconds();
         float elapsed = useconds * 1e-6f;
 
         // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
+        Event event;
         while (window.pollEvent(event)) {
             // "close requested" event: we close the window
-            if (event.type == sf::Event::Closed) {
+            if (event.type == Event::Closed) {
                 window.close();
-            } else if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Escape) {
+            } else if (event.type == Event::KeyPressed) {
+                if (event.key.code == Keyboard::Escape) {
                     window.close();
                 }
             }
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        if (Keyboard::isKeyPressed(Keyboard::W)) {
             rabbit.jump();
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        if (Keyboard::isKeyPressed(Keyboard::A)) {
             rabbit.accel_left();
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        if (Keyboard::isKeyPressed(Keyboard::D)) {
             rabbit.accel_right();
         }
 
         // process physics
-        rabbit.speed += gravity * 0.5f * elapsed;
-        rabbit.position += rabbit.speed * elapsed;
-        rabbit.speed += gravity * 0.5f * elapsed;
-        std::vector<sf::FloatRect> collided;
-        if (level.intersects(rabbit.params.get_rect(), collided)) {
-
-            rabbit.speed = sf::Vector2f();
+        Params next_params = rabbit.params;
+        next_params._speed += gravity * 0.5f * elapsed;
+        next_params._position += next_params._speed * elapsed;
+        next_params._speed += gravity * 0.5f * elapsed;
+        std::vector<FloatRect> collised;
+        if (level.intersects(next_params.get_rect(), collised)) {
+            for (int i = 0; i < collised.size(); i += 1) {
+                FloatRect rect = collised[i];
+                if (fabsf(next_params.position().x - rect.left) >= fabsf(next_params.position().y - rect.top)) {
+                    next_params._speed.x = 0;
+                    if (CELL_SIZE.x > next_params.position().x - rect.left + CELL_SIZE.x > 0) {
+                        next_params._position.x = rect.left - CELL_SIZE.x;
+                        log("iti\n");
+                    } else {
+                        next_params._position.x = rect.left + CELL_SIZE.x;
+                        log("ni\n");
+                    }
+                } else {
+                    if (CELL_SIZE.y > next_params.position().y - rect.top + CELL_SIZE.y > 0) {
+                        next_params._position.y = rect.top - CELL_SIZE.y;
+                        next_params._speed.y = 0;
+                        log("san\n");
+                    } else {
+                        next_params._position.y = rect.top + CELL_SIZE.y;
+                        log("yo\n");
+                    }
+                }
+                log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_params.position().x, next_params.position().y,
+                       rect.left, rect.top);
+            }
         }
+        rabbit.params = next_params;
 
         // clear the window with black color
-        window.clear(sf::Color::Black);
+        window.clear(Color::Black);
 
         // draw everything here...
         level.draw(window);
@@ -67,7 +96,7 @@ int main() {
 
         float sleep_time = 1/MAX_FPS - elapsed;
         if (sleep_time > 0) {
-            sf::sleep(sf::microseconds((sf::Int64)(sleep_time * 1e6)));
+            sleep(microseconds((Int64)(sleep_time * 1e6)));
         }
     }
 

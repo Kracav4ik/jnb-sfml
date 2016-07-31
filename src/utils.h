@@ -5,6 +5,6 @@
 
 using namespace sf;
 
-void draw_rect(RenderWindow& window, Vector2f pos, Vector2f size, Color color);
+void draw_rect(RenderWindow& window, Vector2f pos, Vector2f size, Color color, bool fill=true);
 
 #endif //JNB_SFML_UTILS_H

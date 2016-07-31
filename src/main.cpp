@@ -4,6 +4,7 @@
 #include "level.h"
 #include "rabbit.h"
 #include "debug.h"
+#include "utils.h"
 
 using namespace sf;
 
@@ -61,6 +62,10 @@ int main() {
     Clock clock;
     const float MAX_FPS = 30;
 
+    // debug for collision
+    bool mouse_debug = false;
+    Vector2f mouse_click;
+
     // run the program as long as the window is open
     while (window.isOpen()) {
         Int64 useconds = clock.restart().asMicroseconds();
@@ -75,6 +80,14 @@ int main() {
             } else if (event.type == Event::KeyPressed) {
                 if (event.key.code == Keyboard::Escape) {
                     window.close();
+                }
+            } else if (event.type == Event::MouseButtonPressed) {
+                if (event.mouseButton.button == Mouse::Left) {
+                    mouse_debug = true;
+                    mouse_click.x = event.mouseButton.x;
+                    mouse_click.y = event.mouseButton.y;
+                } else if (event.mouseButton.button == Mouse::Right) {
+                    mouse_debug = false;
                 }
             }
         }
@@ -105,12 +118,24 @@ int main() {
 
         rabbit.params = next_params;
 
+        // debug for collision
+        Vector2f mouse_pos(Mouse::getPosition(window).x, Mouse::getPosition(window).y);
+        HitInfo mouse_hit;
+        Vector2f fixed_pos = collide_rect(level, mouse_click, FloatRect(mouse_pos, CELL_SIZE), mouse_hit);
+
         // clear the window with black color
         window.clear(Color::Black);
 
         // draw everything here...
         level.draw(window);
         rabbit.draw(window);
+
+        // debug for collision
+        if (mouse_debug) {
+            draw_rect(window, mouse_click, CELL_SIZE, Color(128, 128, 128), false);
+            draw_rect(window, mouse_pos, CELL_SIZE, Color(0, 0, 0), false);
+            draw_rect(window, fixed_pos, CELL_SIZE, Color(255, 0, 255), false);
+        }
 
         // end the current frame
         window.display();

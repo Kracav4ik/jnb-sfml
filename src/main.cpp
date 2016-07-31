@@ -9,35 +9,42 @@ using namespace sf;
 
 int GRAVITY = 1500;
 
-Params collide_params(const Level& level, const Params& params) {
-    Params next_params = params;
+struct HitInfo {
+    HitInfo() : hit_x(false), hit_y(false) {}
+
+    bool hit_x;
+    bool hit_y;
+};
+
+Vector2f collide_rect(const Level& level, const Vector2f& old_pos, const FloatRect& obj_rect, HitInfo& hit_info) {
+    Vector2f next_pos(obj_rect.left, obj_rect.top);
     std::vector<FloatRect> collided;
-    if (level.intersects(next_params.get_rect(), collided)) {
+    if (level.intersects(obj_rect, collided)) {
         for (int i = 0; i < collided.size(); i += 1) {
             FloatRect rect = collided[i];
-            if (fabsf(next_params.position().x - rect.left) >= fabsf(next_params.position().y - rect.top)) {
-                next_params._speed.x = 0;
-                if (CELL_SIZE.x > next_params.position().x - rect.left + CELL_SIZE.x) {
-                    next_params._position.x = rect.left - CELL_SIZE.x;
+            if (fabsf(obj_rect.left - rect.left) >= fabsf(obj_rect.top - rect.top)) {
+                hit_info.hit_x = true;
+                if (CELL_SIZE.x > obj_rect.left - rect.left + CELL_SIZE.x) {
+                    next_pos.x = rect.left - CELL_SIZE.x;
                     log("iti\n");
                 } else {
-                    next_params._position.x = rect.left + CELL_SIZE.x;
+                    next_pos.x = rect.left + CELL_SIZE.x;
                     log("ni\n");
                 }
             } else {
-                next_params._speed.y = 0;
-                if (CELL_SIZE.y > next_params.position().y - rect.top + CELL_SIZE.y) {
-                    next_params._position.y = rect.top - CELL_SIZE.y;
+                hit_info.hit_y = true;
+                if (CELL_SIZE.y > obj_rect.top - rect.top + CELL_SIZE.y) {
+                    next_pos.y = rect.top - CELL_SIZE.y;
                     log("san\n");
                 } else {
-                    next_params._position.y = rect.top + CELL_SIZE.y;
+                    next_pos.y = rect.top + CELL_SIZE.y;
                     log("yo\n");
                 }
             }
-            log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_params.position().x, next_params.position().y, rect.left, rect.top);
+            log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_pos.x, next_pos.y, rect.left, rect.top);
         }
     }
-    return next_params;
+    return next_pos;
 }
 
 int main() {
@@ -86,7 +93,16 @@ int main() {
         next_params._speed += gravity * 0.5f * elapsed;
         next_params._position += next_params._speed * elapsed;
         next_params._speed += gravity * 0.5f * elapsed;
-        next_params = collide_params(level, next_params);
+
+        HitInfo hit_info;
+        next_params._position = collide_rect(level, rabbit.params.position(), next_params.get_rect(), hit_info);
+        if (hit_info.hit_x) {
+            next_params._speed.x = 0;
+        }
+        if (hit_info.hit_y) {
+            next_params._speed.y = 0;
+        }
+
         rabbit.params = next_params;
 
         // clear the window with black color

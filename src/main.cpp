@@ -61,7 +61,7 @@ int main() {
                 FloatRect rect = collided[i];
                 if (fabsf(next_params.position().x - rect.left) >= fabsf(next_params.position().y - rect.top)) {
                     next_params._speed.x = 0;
-                    if (CELL_SIZE.x > next_params.position().x - rect.left + CELL_SIZE.x > 0) {
+                    if (CELL_SIZE.x > next_params.position().x - rect.left + CELL_SIZE.x) {
                         next_params._position.x = rect.left - CELL_SIZE.x;
                         log("iti\n");
                     } else {
@@ -70,7 +70,7 @@ int main() {
                     }
                 } else {
                     next_params._speed.y = 0;
-                    if (CELL_SIZE.y > next_params.position().y - rect.top + CELL_SIZE.y > 0) {
+                    if (CELL_SIZE.y > next_params.position().y - rect.top + CELL_SIZE.y) {
                         next_params._position.y = rect.top - CELL_SIZE.y;
                         log("san\n");
                     } else {

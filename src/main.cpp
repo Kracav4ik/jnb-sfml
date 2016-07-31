@@ -9,6 +9,37 @@ using namespace sf;
 
 int GRAVITY = 1500;
 
+Params collide_params(const Level& level, const Params& params) {
+    Params next_params = params;
+    std::vector<FloatRect> collided;
+    if (level.intersects(next_params.get_rect(), collided)) {
+        for (int i = 0; i < collided.size(); i += 1) {
+            FloatRect rect = collided[i];
+            if (fabsf(next_params.position().x - rect.left) >= fabsf(next_params.position().y - rect.top)) {
+                next_params._speed.x = 0;
+                if (CELL_SIZE.x > next_params.position().x - rect.left + CELL_SIZE.x) {
+                    next_params._position.x = rect.left - CELL_SIZE.x;
+                    log("iti\n");
+                } else {
+                    next_params._position.x = rect.left + CELL_SIZE.x;
+                    log("ni\n");
+                }
+            } else {
+                next_params._speed.y = 0;
+                if (CELL_SIZE.y > next_params.position().y - rect.top + CELL_SIZE.y) {
+                    next_params._position.y = rect.top - CELL_SIZE.y;
+                    log("san\n");
+                } else {
+                    next_params._position.y = rect.top + CELL_SIZE.y;
+                    log("yo\n");
+                }
+            }
+            log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_params.position().x, next_params.position().y, rect.left, rect.top);
+        }
+    }
+    return next_params;
+}
+
 int main() {
     RenderWindow  window(VideoMode(800, 512), "My window");
 
@@ -55,33 +86,7 @@ int main() {
         next_params._speed += gravity * 0.5f * elapsed;
         next_params._position += next_params._speed * elapsed;
         next_params._speed += gravity * 0.5f * elapsed;
-        std::vector<FloatRect> collided;
-        if (level.intersects(next_params.get_rect(), collided)) {
-            for (int i = 0; i < collided.size(); i += 1) {
-                FloatRect rect = collided[i];
-                if (fabsf(next_params.position().x - rect.left) >= fabsf(next_params.position().y - rect.top)) {
-                    next_params._speed.x = 0;
-                    if (CELL_SIZE.x > next_params.position().x - rect.left + CELL_SIZE.x) {
-                        next_params._position.x = rect.left - CELL_SIZE.x;
-                        log("iti\n");
-                    } else {
-                        next_params._position.x = rect.left + CELL_SIZE.x;
-                        log("ni\n");
-                    }
-                } else {
-                    next_params._speed.y = 0;
-                    if (CELL_SIZE.y > next_params.position().y - rect.top + CELL_SIZE.y) {
-                        next_params._position.y = rect.top - CELL_SIZE.y;
-                        log("san\n");
-                    } else {
-                        next_params._position.y = rect.top + CELL_SIZE.y;
-                        log("yo\n");
-                    }
-                }
-                log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_params.position().x, next_params.position().y,
-                       rect.left, rect.top);
-            }
-        }
+        next_params = collide_params(level, next_params);
         rabbit.params = next_params;
 
         // clear the window with black color

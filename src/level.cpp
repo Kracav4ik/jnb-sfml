@@ -48,7 +48,7 @@ void Level::print() {
     }
 }
 
-bool Level::intersects(const FloatRect& rect, std::vector<FloatRect>& vector) {
+bool Level::intersects(const FloatRect& rect, std::vector<FloatRect>& vector) const {
     bool b = false;
     for (int x = 0; x < SIZE_X; x += 1) {
         for (int y = 0; y < SIZE_Y; y += 1) {

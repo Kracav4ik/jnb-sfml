@@ -22,12 +22,12 @@ Vector2f next_pos_hit_x(const FloatRect &rect, const Vector2f &old_pos, Vector2f
         next_pos.x = rect.left - CELL_SIZE.x;
         float new_y = (next_pos.x - old_pos.x) * delta_pos.y / delta_pos.x;
         next_pos.y = old_pos.y + new_y;
-        log("iti\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",next_pos.x - rect.left + CELL_SIZE.x, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
+//        log("iti\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",next_pos.x - rect.left + CELL_SIZE.x, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
     } else if (old_pos.x >= rect.left + CELL_SIZE.x) {
         next_pos.x = rect.left + CELL_SIZE.x;
         float new_y = (next_pos.x - old_pos.x) * delta_pos.y / delta_pos.x;
         next_pos.y = old_pos.y + new_y;
-        log("ni\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",next_pos.x - rect.left + CELL_SIZE.x, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
+//        log("ni\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",next_pos.x - rect.left + CELL_SIZE.x, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
     } else {
         use = false;
     }
@@ -39,12 +39,12 @@ Vector2f next_pos_hit_y(const FloatRect &rect, const Vector2f &old_pos, Vector2f
         next_pos.y = rect.top - CELL_SIZE.y;
         float new_x = (next_pos.y - old_pos.y) * delta_pos.x / delta_pos.y;
         next_pos.x = old_pos.x + new_x;
-        log("san\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",rect.top - next_pos.y + CELL_SIZE.y, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
+//        log("san\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",rect.top - next_pos.y + CELL_SIZE.y, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
     } else if(old_pos.y >= rect.top + CELL_SIZE.y) {
         next_pos.y = rect.top + CELL_SIZE.y;
         float new_x = (next_pos.y - old_pos.y) * delta_pos.x / delta_pos.y;
         next_pos.x = old_pos.x + new_x;
-        log("yo\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",next_pos.y - rect.top + CELL_SIZE.y, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
+//        log("yo\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",next_pos.y - rect.top + CELL_SIZE.y, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
     } else {
         use = false;
     }
@@ -55,7 +55,7 @@ float len2(const Vector2f& v) {
     return v.x*v.x + v.y*v.y;
 }
 
-Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& old_pos, const FloatRect& obj_rect, HitInfo& hit_info) {
+Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vector2f& old_pos, const FloatRect& obj_rect, HitInfo& hit_info) {
     Vector2f next_pos(obj_rect.left, obj_rect.top);
     draw_line(window, old_pos, next_pos, Color(255, 0, 0));
     std::vector<FloatRect> collided;
@@ -80,19 +80,46 @@ Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& 
             Vector2f next_pos_y = next_pos_hit_y(rect, old_pos, next_pos, delta_pos, use_y);
             if (!use_x) {
                 next_pos = next_pos_y;
+                hit_info.hit_y = true;
             } else if (!use_y) {
                 next_pos = next_pos_x;
+                hit_info.hit_x = true;
             } else if (len2(next_pos_x - next_pos) < len2(next_pos_y - next_pos)) {
                 next_pos = next_pos_x;
+                hit_info.hit_x = true;
             } else {
                 next_pos = next_pos_y;
+                hit_info.hit_y = true;
             }
-            log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_pos.x, next_pos.y, rect.left, rect.top);
+//            log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_pos.x, next_pos.y, rect.left, rect.top);
             draw_rect(window, next_pos, CELL_SIZE/5.f, colors[i], false);
         }
     }
     draw_line(window, old_pos, next_pos, Color(255, 0, 0));
     return next_pos;
+}
+
+Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& old_pos, const FloatRect& obj_rect, HitInfo& hit_info){
+    Vector2f next_pos(obj_rect.left, obj_rect.top);
+    Vector2f delta_pos = next_pos - old_pos;
+    float len_delta = sqrtf(len2(delta_pos));
+    Vector2f result = next_pos;
+    int count = int(len_delta / CELL_SIZE.x) + 1;
+    Vector2f norm_delta = delta_pos / float(count);
+    Vector2f new_old_pos = old_pos;
+    log("count is %d, len is %f\n", count, len_delta);
+    if (len_delta < 2) {
+        log("fuck you\n");
+    }
+    for(int _ = 0; _ < count; _ += 1 ){
+        result = collide_rect_pieces(window, level, new_old_pos, FloatRect(new_old_pos + norm_delta, CELL_SIZE), hit_info);
+        new_old_pos += norm_delta;
+        if (hit_info.hit_x || hit_info.hit_y){
+            log("break!\n");
+            break;
+        }
+    }
+    return result;
 }
 
 int main() {
@@ -174,9 +201,12 @@ int main() {
         // debug for collision
         Vector2f mouse_pos(Mouse::getPosition(window).x, Mouse::getPosition(window).y);
         HitInfo mouse_hit;
-        Vector2f fixed_pos = collide_rect(window, level, mouse_click, FloatRect(mouse_pos, CELL_SIZE), mouse_hit);
+        Vector2f fixed_pos;
+        if (mouse_debug) {
+            fixed_pos = collide_rect(window, level, mouse_click, FloatRect(mouse_pos, CELL_SIZE), mouse_hit);
+        }
 
-//        rabbit.draw(window);
+        rabbit.draw(window);
 
         // debug for collision
         if (mouse_debug) {

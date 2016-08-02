@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "params.h"
+#include "level.h"
 
 using namespace sf;
 
@@ -10,8 +11,9 @@ const Vector2f RABBIT_SIZE(32, 32);
 
 struct Rabbit {
     Params params;
+    const Level& _level;
 
-    Rabbit();
+    Rabbit(const Level& level);
 
     void draw(RenderWindow& window) const;
 
@@ -21,6 +23,7 @@ struct Rabbit {
 
     void accel_right();
 
+    bool can_jump() const;
 };
 
 #endif //JNB_SFML_RABBIT_H

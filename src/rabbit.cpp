@@ -3,7 +3,11 @@
 #include "utils.h"
 
 void Rabbit::draw(RenderWindow& window) const {
-    draw_rect(window, params.position(), RABBIT_SIZE, Color(222, 190, 140));
+    Color color = Color(222, 190, 140);
+    if (can_jump()) {
+        color = Color(128, 255, 128);
+    }
+    draw_rect(window, params.position(), RABBIT_SIZE, color);
 }
 
 void Rabbit::jump() {
@@ -20,7 +24,11 @@ void Rabbit::accel_right() {
     params._speed.x = 100;
 }
 
-Rabbit::Rabbit()
-    : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE)
+Rabbit::Rabbit(const Level& level)
+    : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE), _level(level)
 {
+}
+
+bool Rabbit::can_jump() const {
+    return _level.block_under_rect(params.get_rect());
 }

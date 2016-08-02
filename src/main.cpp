@@ -64,7 +64,7 @@ Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vec
             {105, 255, 0},
             {0,  105, 255},
     };
-    if (level.intersects(obj_rect, collided)) {
+    if (level.intersects(obj_rect, &collided)) {
         for (int i = 0; i < collided.size(); i += 1) {
             Vector2f delta_pos = next_pos - old_pos;
             FloatRect rect = collided[i];
@@ -127,7 +127,7 @@ int main() {
 
     Level level;
     level.print();
-    Rabbit rabbit;
+    Rabbit rabbit(level);
     Vector2f gravity(0, GRAVITY);
 
     window.setPosition(Vector2i(45, 50));
@@ -171,7 +171,7 @@ int main() {
                 }
             }
         }
-        if (Keyboard::isKeyPressed(Keyboard::W)) {
+        if (Keyboard::isKeyPressed(Keyboard::W) && rabbit.can_jump()) {
             rabbit.jump();
         }
         if (Keyboard::isKeyPressed(Keyboard::A)) {

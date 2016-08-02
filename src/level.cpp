@@ -48,7 +48,7 @@ void Level::print() {
     }
 }
 
-bool Level::intersects(const FloatRect& rect, std::vector<FloatRect>& vector) const {
+bool Level::intersects(const FloatRect& rect, std::vector<FloatRect>* vector) const {
     bool b = false;
     for (int x = 0; x < SIZE_X; x += 1) {
         for (int y = 0; y < SIZE_Y; y += 1) {
@@ -56,7 +56,9 @@ bool Level::intersects(const FloatRect& rect, std::vector<FloatRect>& vector) co
             if (c == '#') {
                 FloatRect cell_rect(Vector2f(CELL_SIZE.x * x, CELL_SIZE.y * y), CELL_SIZE);
                 if (cell_rect.intersects(rect)) {
-                    vector.push_back(cell_rect);
+                    if (vector) {
+                        (*vector).push_back(cell_rect);
+                    }
                     b = true;
                 }
             }
@@ -64,3 +66,10 @@ bool Level::intersects(const FloatRect& rect, std::vector<FloatRect>& vector) co
     }
     return b;
 }
+
+bool Level::block_under_rect(const FloatRect &rect) const {
+    FloatRect checker(rect.left, rect.top + 1, rect.width, rect.height);
+    return intersects(checker);
+}
+
+

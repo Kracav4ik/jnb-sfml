@@ -22,7 +22,9 @@ struct Level {
 
     void print();
 
-    bool intersects(const FloatRect& rect, std::vector<FloatRect>& vector) const;
+    bool intersects(const FloatRect& rect, std::vector<FloatRect>* vector=NULL) const;
+
+    bool block_under_rect(const FloatRect &rect) const;
 };
 
 #endif //JNB_SFML_LEVEL_H

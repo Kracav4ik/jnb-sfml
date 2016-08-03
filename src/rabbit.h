@@ -4,12 +4,13 @@
 #include <SFML/Graphics.hpp>
 #include "params.h"
 #include "level.h"
+#include "render.h"
 
 using namespace sf;
 
 const Vector2f RABBIT_SIZE(32, 32);
 
-struct Rabbit {
+struct Rabbit : Renderable {
     Params params;
     const Level& _level;
 

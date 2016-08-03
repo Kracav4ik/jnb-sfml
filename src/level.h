@@ -2,6 +2,7 @@
 #define JNB_SFML_LEVEL_H
 
 #include <SFML/Graphics/Rect.hpp>
+#include "render.h"
 
 namespace sf {
     struct RenderWindow;
@@ -13,12 +14,12 @@ const int SIZE_X = 25;
 const int SIZE_Y = 16;
 const Vector2f CELL_SIZE(32, 32);
 
-struct Level {
+struct Level : Renderable {
     char geometry[SIZE_X][SIZE_Y];
 
     Level();
 
-    void draw(RenderWindow& window);
+    void draw(RenderWindow& window) const;
 
     void print();
 

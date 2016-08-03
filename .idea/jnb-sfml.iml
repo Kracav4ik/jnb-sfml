@@ -3,16 +3,18 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/rabbit.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/level.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/params.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/rabbit.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/debug.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/level.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/utils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/render.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/utils.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/render.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/level.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/params.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/utils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/debug.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/SFML-2.3.2/cmake/Modules/FindSFML.cmake" isTestSource="false" />
     </content>

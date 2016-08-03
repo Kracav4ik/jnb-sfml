@@ -5,6 +5,7 @@
 #include "rabbit.h"
 #include "debug.h"
 #include "utils.h"
+#include "render.h"
 
 using namespace sf;
 
@@ -57,7 +58,7 @@ float len2(const Vector2f& v) {
 
 Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vector2f& old_pos, const FloatRect& obj_rect, HitInfo& hit_info) {
     Vector2f next_pos(obj_rect.left, obj_rect.top);
-    draw_line(window, old_pos, next_pos, Color(255, 0, 0));
+//    draw_line(window, old_pos, next_pos, Color(255, 0, 0));
     std::vector<FloatRect> collided;
     static Color colors[] = {
             {255, 105, 0},
@@ -73,7 +74,7 @@ Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vec
             if (!rect.intersects(next_obj_rect, intersection)) {
                 continue;
             }
-            draw_rect(window, Vector2f(rect.left, rect.top), CELL_SIZE, colors[i], false);
+//            draw_rect(window, Vector2f(rect.left, rect.top), CELL_SIZE, colors[i], false);
             bool use_x = true;
             bool use_y = true;
             Vector2f next_pos_x = next_pos_hit_x(rect, old_pos, next_pos, delta_pos, use_x);
@@ -92,10 +93,10 @@ Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vec
                 hit_info.hit_y = true;
             }
 //            log("bbl_next(%f, %f), bbl_rect(%f, %f)\n", next_pos.x, next_pos.y, rect.left, rect.top);
-            draw_rect(window, next_pos, CELL_SIZE/5.f, colors[i], false);
+//            draw_rect(window, next_pos, CELL_SIZE/5.f, colors[i], false);
         }
     }
-    draw_line(window, old_pos, next_pos, Color(255, 0, 0));
+//    draw_line(window, old_pos, next_pos, Color(255, 0, 0));
     return next_pos;
 }
 
@@ -124,11 +125,15 @@ Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& 
 
 int main() {
     RenderWindow  window(VideoMode(800, 512), "My window");
+    RenderManager render_manager;
 
     Level level;
     level.print();
     Rabbit rabbit(level);
     Vector2f gravity(0, GRAVITY);
+
+    render_manager.add_renderable(level);
+    render_manager.add_renderable(rabbit);
 
     window.setPosition(Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);
@@ -142,12 +147,6 @@ int main() {
 
     // run the program as long as the window is open
     while (window.isOpen()) {
-        // clear the window with black color
-        window.clear(Color::Black);
-
-        // draw everything here...
-        level.draw(window);
-
         Int64 useconds = clock.restart().asMicroseconds();
         float elapsed = useconds * 1e-6f;
 
@@ -206,7 +205,11 @@ int main() {
             fixed_pos = collide_rect(window, level, mouse_click, FloatRect(mouse_pos, CELL_SIZE), mouse_hit);
         }
 
-        rabbit.draw(window);
+        // clear the window with black color
+        window.clear(Color::Black);
+
+        // draw everything here...
+        render_manager.render(window);
 
         // debug for collision
         if (mouse_debug) {

@@ -22,7 +22,7 @@ Level::Level() {
     }
 }
 
-void Level::draw(RenderWindow& window) {
+void Level::draw(RenderWindow& window) const {
     draw_rect(window, Vector2f(), Vector2f(800, 512), Color(0, 109, 214));
 
     for (int x = 0; x < SIZE_X; x += 1) {

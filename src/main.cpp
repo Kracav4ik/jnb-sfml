@@ -125,15 +125,12 @@ Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& 
 
 int main() {
     RenderWindow  window(VideoMode(800, 512), "My window");
-    RenderManager render_manager;
+    RenderManager& render_manager = RenderManager::inst();
 
     Level level;
     level.print();
     Rabbit rabbit(level);
     Vector2f gravity(0, GRAVITY);
-
-    render_manager.add_renderable(level);
-    render_manager.add_renderable(rabbit);
 
     window.setPosition(Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);

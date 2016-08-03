@@ -14,7 +14,7 @@ const int SIZE_X = 25;
 const int SIZE_Y = 16;
 const Vector2f CELL_SIZE(32, 32);
 
-struct Level : Renderable {
+struct Level : RenderableAutoregister {
     char geometry[SIZE_X][SIZE_Y];
 
     Level();

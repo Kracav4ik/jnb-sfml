@@ -11,6 +11,11 @@ struct Renderable {
     virtual ~Renderable() {}
 };
 
+struct RenderableAutoregister : Renderable {
+    RenderableAutoregister();
+    ~RenderableAutoregister();
+};
+
 struct RenderManager {
     std::list<const Renderable*> renderables;
 
@@ -18,6 +23,11 @@ struct RenderManager {
     void remove_renderable(const Renderable& renderable);
 
     void render(RenderWindow& window) const;
+
+    static RenderManager& inst();
+
+private:
+    RenderManager();
 };
 
 

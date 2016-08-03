@@ -16,7 +16,19 @@ void RenderManager::render(RenderWindow &window) const {
     )
 }
 
+RenderManager::RenderManager() {
+}
 
+RenderManager& RenderManager::inst() {
+    static RenderManager manager;
+    return manager;
+}
 
+RenderableAutoregister::RenderableAutoregister() {
+    RenderManager::inst().add_renderable(*this);
+}
 
+RenderableAutoregister::~RenderableAutoregister() {
+    RenderManager::inst().remove_renderable(*this);
+}
 

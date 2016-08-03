@@ -10,7 +10,7 @@ using namespace sf;
 
 const Vector2f RABBIT_SIZE(32, 32);
 
-struct Rabbit : Renderable {
+struct Rabbit : RenderableAutoregister {
     Params params;
     const Level& _level;
 

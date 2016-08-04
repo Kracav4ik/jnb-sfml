@@ -8,8 +8,6 @@ struct Animation{
     Animation();
 
     void step(float elapsed);
-
-
 };
 
 #endif //JNB_SFML_ANIMATION_H

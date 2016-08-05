@@ -8,6 +8,7 @@
 #include "render.h"
 #include "animation.h"
 #include "texture_manager.h"
+#include "frame_animation.h"
 
 using namespace sf;
 
@@ -110,15 +111,15 @@ Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& 
     int count = int(len_delta / CELL_SIZE.x) + 1;
     Vector2f norm_delta = delta_pos / float(count);
     Vector2f new_old_pos = old_pos;
-    log("count is %d, len is %f\n", count, len_delta);
+//    log("count is %d, len is %f\n", count, len_delta);
     if (len_delta < 2) {
-        log("fuck you\n");
+//        log("fuck you\n");
     }
     for(int _ = 0; _ < count; _ += 1 ){
         result = collide_rect_pieces(window, level, new_old_pos, FloatRect(new_old_pos + norm_delta, CELL_SIZE), hit_info);
         new_old_pos += norm_delta;
         if (hit_info.hit_x || hit_info.hit_y){
-            log("break!\n");
+//            log("break!\n");
             break;
         }
     }
@@ -157,6 +158,7 @@ int main() {
     HardcodedRabbit r1(50, 50, true);
     HardcodedRabbit r2(600, 50, false);
     Vector2f gravity(0, GRAVITY);
+    FrameAnim frame_anim(FilePath("anims\\r1_run_right.txt"), 100, 100, 10);
 
     window.setPosition(Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);
@@ -229,7 +231,7 @@ int main() {
         }
         r1.step(elapsed);
         r2.step(elapsed);
-
+        frame_anim.step(elapsed);
 
         // clear the window with black color
         window.clear(Color::Black);

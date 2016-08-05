@@ -27,6 +27,9 @@ FrameAnim::FrameAnim(const FilePath& path, int x, int y, float scale) : _x(x), _
             }
             result.push_back(c);
         }
+        if(!result.empty()) {
+            results.push_back(atoi(result.c_str()));
+        }
         int xx = results[0];
         int yy = results[1];
         int w = results[2];
@@ -49,7 +52,6 @@ void FrameAnim::draw(RenderWindow& window) const {
     sprite.setPosition(_x + frame._dx, _y + frame._dy);
     sprite.setScale(_scale, _scale);
     window.draw(sprite);
-    draw_rect(window,Vector2f(_x, _y),Vector2f(frame._w, frame._h) * _scale,Color(255, 0, 255));
 }
 
 

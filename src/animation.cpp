@@ -8,7 +8,7 @@ Animation::Animation()
 
 void Animation::step(float elapsed) {
     time += elapsed;
-    if(time >= total_time) {
-        time -= total_time;
+    if (time >= total_time) {
+        time -= int(time / total_time) * total_time;
     }
 }

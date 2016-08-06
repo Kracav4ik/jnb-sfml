@@ -9,12 +9,12 @@ FrameAnim::FrameAnim(const FilePath& path, int x, int y, float scale) : _x(x), _
         return;
     }
     std::string tex_path = strip(file.read_line());
-    _tex = &TextureManager::inst().get_texture(tex_path.c_str());
+    _tex = &TextureManager::inst().get_texture(tex_path);
     std::string current_frame = file.read_line();
 
     const Vector2u& size = _tex->getSize();
     log("size is %d x %d\n", size.x, size.y);
-    
+
     while (!current_frame.empty()) {
         std::string result;
         std::vector<int> results;
@@ -49,7 +49,7 @@ void FrameAnim::draw(RenderWindow& window) const {
     Sprite sprite;
     sprite.setTexture(*_tex);
     sprite.setTextureRect(IntRect(frame._x, frame._y, frame._w, frame._h));
-    sprite.setPosition(_x + frame._dx, _y + frame._dy);
+    sprite.setPosition(_x - frame._dx * _scale, _y - frame._dy * _scale);
     sprite.setScale(_scale, _scale);
     window.draw(sprite);
 }

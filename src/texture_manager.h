@@ -7,10 +7,10 @@ using namespace sf;
 
 
 struct TextureManager{
-    std::unordered_map<const char*, Texture*> texture_map;
+    std::unordered_map<std::string, Texture*> texture_map;
     Texture empty;
 
-    Texture& get_texture(const char* name);
+    Texture& get_texture(const std::string& name);
     static TextureManager& inst();
 
 private:

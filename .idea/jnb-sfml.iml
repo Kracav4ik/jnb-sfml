@@ -7,10 +7,11 @@
       <sourceFolder url="file://$MODULE_DIR$/src/file_path.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/rabbit.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/render.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/params.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/frame_animation.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/texture_manager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/params.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/params.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/editor_main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/rabbit.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/utils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/animation.cpp" isTestSource="false" />

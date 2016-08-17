@@ -73,8 +73,10 @@ bool load_from_pcx(Texture& texture, const std::string& name) {
     for (unsigned int x = 0; x < width; x++) {
         for (unsigned int y = 0; y < height; y++) {
             int offset = y*width + x;
-            const PCXPalette::PCXColor& color = palette.colors[image_data[offset]];
-            image.setPixel(x, y, Color(color.r, color.g, color.b));
+            Uint8 color_idx = image_data[offset];
+            const PCXPalette::PCXColor& color = palette.colors[color_idx];
+            Uint8 alpha = (Uint8) (color_idx != 0  ? 255 : 0);
+            image.setPixel(x, y, Color(color.r, color.g, color.b, alpha));
         }
     }
 //    image.saveToFile("c:\\git_guest\\test.png");

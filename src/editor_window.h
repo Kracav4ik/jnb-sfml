@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <QMainWindow>
 #include <QtCore/QDir>
 
@@ -25,5 +26,14 @@ public:
             QString str = list[i];
             animationList->addItem(str.left(str.size() - 4));
         }
+    }
+
+public slots:
+    void on_startAnimation_clicked(){
+        printf("Start\n");
+    }
+
+    void on_animationList_currentTextChanged(const QString& string){
+        printf("%s\n",string.toUtf8().constData());
     }
 };

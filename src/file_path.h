@@ -8,7 +8,7 @@ struct FilePath {
 
     FilePath(const std::string& path);
 
-    const char* str();
+    const char* str() const;
 };
 
 struct TextFile {

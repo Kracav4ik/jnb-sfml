@@ -2,7 +2,7 @@
 
 FilePath::FilePath(const std::string& path) : _path(path) {}
 
-const char* FilePath::str() {
+const char* FilePath::str() const {
     return _path.c_str();
 }
 

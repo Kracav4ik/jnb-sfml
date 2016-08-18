@@ -20,12 +20,17 @@ struct Frame {
     Frame(int x, int y, int w, int h, int dx, int dy);
 };
 
+struct AnimInfo{
+    std::vector<Frame> _frames;
+    std::string _tex_name;
+    AnimInfo(const FilePath& path);
+};
 
 struct FrameAnim : Animation, RenderableAutoregister {
     float _x;
     float _y;
     float _scale;
-    std::vector<Frame> _frames;
+    AnimInfo animInfo;
     Texture* _tex;
 
     FrameAnim(const FilePath& path, int x, int y, float scale);

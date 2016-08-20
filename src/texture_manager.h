@@ -8,7 +8,11 @@ using namespace sf;
 
 struct TextureManager{
     std::unordered_map<std::string, Texture*> texture_map;
-    Texture empty;
+    std::unordered_map<std::string, Image*> image_map;
+    Texture empty_texture;
+    Image empty_image;
+
+    Image& get_image(const std::string& name);
 
     Texture& get_texture(const std::string& name);
     static TextureManager& inst();

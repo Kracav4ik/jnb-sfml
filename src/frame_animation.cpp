@@ -21,7 +21,13 @@ void FrameAnim::draw(RenderWindow& window) const {
 
 Frame::Frame(int x, int y, int w, int h, int dx, int dy) : _x(x), _y(y), _w(w), _h(h), _dx(dx), _dy(dy) {}
 
+AnimInfo::AnimInfo() {}
+
 AnimInfo::AnimInfo(const FilePath& path) {
+    load(path);
+}
+
+void AnimInfo::load(const FilePath& path) {
     TextFile file(path);
     if (!file.open()) {
         printf("cannot open \"%s\"\n",path.str());
@@ -29,6 +35,7 @@ AnimInfo::AnimInfo(const FilePath& path) {
     }
     _tex_name = strip(file.read_line());
     std::string current_frame = file.read_line();
+    _frames.clear();
 
     while (!current_frame.empty()) {
         std::string result;
@@ -54,5 +61,4 @@ AnimInfo::AnimInfo(const FilePath& path) {
         _frames.push_back(Frame(xx, yy, w, h, dx, dy));
         current_frame = file.read_line();
     }
-
 }

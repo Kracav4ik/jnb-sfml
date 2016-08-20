@@ -35,8 +35,12 @@ struct PCXHeader {
 };
 #pragma clang diagnostic pop
 
-bool load_from_pcx(Texture& texture, const std::string& name) {
+bool load_from_pcx(Image& image, const std::string& name) {
     FILE* file = fopen(name.c_str(), "rb");
+    if(!file){
+        printf("cannot open file \"%s\"\n",name.c_str());
+        return false;
+    }
     PCXHeader header;
     fread(&header, sizeof(header), 1, file);
 
@@ -66,8 +70,8 @@ bool load_from_pcx(Texture& texture, const std::string& name) {
 
     PCXPalette palette;
     fread(&palette, sizeof(palette), 1, file);
+    fclose(file);
 
-    Image image;
     image.create(width, height);
 
     for (unsigned int x = 0; x < width; x++) {
@@ -80,7 +84,7 @@ bool load_from_pcx(Texture& texture, const std::string& name) {
         }
     }
 //    image.saveToFile("c:\\git_guest\\test.png");
-    return texture.loadFromImage(image);
+    return true;
 }
 
 Texture& TextureManager::get_texture(const std::string& name) {
@@ -89,19 +93,15 @@ Texture& TextureManager::get_texture(const std::string& name) {
     }
     Texture* texture = new Texture();
     bool loaded;
-    if (name.substr(name.size() - 4) == ".pcx") {
-        // manually load .pcx
-        loaded = load_from_pcx(*texture, name);
-    } else {
-        loaded = texture->loadFromFile(name);
-    }
+
+    loaded = texture->loadFromImage(get_image(name));
 
     if (loaded) {
         texture_map[name] = texture;
         return *texture;
     } else {
         delete texture;
-        return empty;
+        return empty_texture;
     }
 }
 
@@ -111,11 +111,32 @@ TextureManager& TextureManager::inst() {
 }
 
 TextureManager::TextureManager() {
-    Image grid;
     Uint8 pixels[2*2*4] = {
             255,   0,   0, 255,     0, 255,   0, 255,
               0,   0, 255, 255,   128, 128, 128, 255,
     };
-    grid.create(2, 2, pixels);
-    empty.loadFromImage(grid);
+    empty_image.create(2, 2, pixels);
+    empty_texture.loadFromImage(empty_image);
+}
+
+Image& TextureManager::get_image(const std::string& name) {
+    if (image_map.count(name)) {
+        return *image_map[name];
+    }
+    Image* image = new Image();
+    bool loaded;
+    if (name.substr(name.size() - 4) == ".pcx") {
+        // manually load .pcx
+        loaded = load_from_pcx(*image, name);
+    } else {
+        loaded = image->loadFromFile(name);
+    }
+
+    if (loaded) {
+        image_map[name] = image;
+        return *image;
+    } else {
+        delete image;
+        return empty_image;
+    }
 }

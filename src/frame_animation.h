@@ -23,7 +23,12 @@ struct Frame {
 struct AnimInfo{
     std::vector<Frame> _frames;
     std::string _tex_name;
+
+    AnimInfo();
+
     AnimInfo(const FilePath& path);
+
+    void load(const FilePath& path);
 };
 
 struct FrameAnim : Animation, RenderableAutoregister {

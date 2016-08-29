@@ -3,7 +3,12 @@
 #include "texture_manager.h"
 #include "debug.h"
 
-FrameAnim::FrameAnim(const FilePath& path, int x, int y, float scale) : _x(x), _y(y), _scale(scale), _tex(NULL), animInfo(path) {
+FrameAnim::FrameAnim(const FilePath& path, int x, int y, float scale) :
+        _x(x),
+        _y(y),
+        _scale(scale),
+        _tex(NULL),
+        animInfo(path) {
     _tex = &TextureManager::inst().get_texture(animInfo._tex_name);
 }
 
@@ -19,7 +24,13 @@ void FrameAnim::draw(RenderWindow& window) const {
 }
 
 
-Frame::Frame(int x, int y, int w, int h, int dx, int dy) : _x(x), _y(y), _w(w), _h(h), _dx(dx), _dy(dy) {}
+Frame::Frame(int x, int y, int w, int h, int dx, int dy) :
+        _x(x),
+        _y(y),
+        _w(w),
+        _h(h),
+        _dx(dx),
+        _dy(dy) {}
 
 AnimInfo::AnimInfo() {}
 
@@ -30,7 +41,7 @@ AnimInfo::AnimInfo(const FilePath& path) {
 void AnimInfo::load(const FilePath& path) {
     TextFile file(path);
     if (!file.open()) {
-        printf("cannot open \"%s\"\n",path.str());
+        printf("cannot open for read \"%s\"\n", path.str());
         return;
     }
     _tex_name = strip(file.read_line());
@@ -49,7 +60,7 @@ void AnimInfo::load(const FilePath& path) {
             }
             result.push_back(c);
         }
-        if(!result.empty()) {
+        if (!result.empty()) {
             results.push_back(atoi(result.c_str()));
         }
         int xx = results[0];
@@ -61,4 +72,18 @@ void AnimInfo::load(const FilePath& path) {
         _frames.push_back(Frame(xx, yy, w, h, dx, dy));
         current_frame = file.read_line();
     }
+}
+
+void AnimInfo::save(const FilePath& path) {
+    FILE* file = fopen(path.str(), "w");
+    if (!file) {
+        printf("cannot open for write \"%s\"\n", path.str());
+        return;
+    }
+    fprintf(file, "%s", _tex_name.c_str());
+    for (int i = 0; i < _frames.size(); i++) {
+        Frame& frame = _frames[i];
+        fprintf(file, "\n%d %d %d %d %d %d", frame._x, frame._y, frame._w, frame._h, frame._dx, frame._dy);
+    }
+    fclose(file);
 }

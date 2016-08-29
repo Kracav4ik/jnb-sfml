@@ -29,6 +29,8 @@ struct AnimInfo{
     AnimInfo(const FilePath& path);
 
     void load(const FilePath& path);
+
+    void save(const FilePath& path);
 };
 
 struct FrameAnim : Animation, RenderableAutoregister {

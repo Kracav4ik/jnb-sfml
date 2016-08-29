@@ -27,6 +27,7 @@
     </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/params.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/texture_manager.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/editor_window.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/file_path.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/frame_animation.h" isTestSource="false" />
@@ -34,13 +35,15 @@
       <sourceFolder url="file://$MODULE_DIR$/src/editor_window.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/editor.ui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/render.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/background_grid.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/frame_animation.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/background_grid.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/level.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/texture_manager.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/utils.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/params.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/editor_main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/rabbit.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/utils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/level.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/animation.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/file_path.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/animation.h" isTestSource="false" />
@@ -48,7 +51,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/debug.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/debug.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/texture_manager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/level.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/utils.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/render.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />

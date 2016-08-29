@@ -19,7 +19,7 @@ set(GAME_NAME "jnb_sfml")
 set(EDITOR_NAME "jnb_edit")
 set(COMMON_SOURCES src/level.cpp src/level.h src/rabbit.cpp src/rabbit.h src/utils.cpp src/utils.h src/params.cpp src/params.h src/debug.cpp src/debug.h src/render.cpp src/render.h src/texture_manager.cpp src/texture_manager.h src/animation.cpp src/animation.h src/file_path.cpp src/file_path.h src/frame_animation.cpp src/frame_animation.h)
 set(GAME_SOURCES src/main.cpp ${COMMON_SOURCES})
-set(EDITOR_SOURCES src/editor_main.cpp src/editor_window.h src/editor_window.cpp src/editor.ui ${COMMON_SOURCES})
+set(EDITOR_SOURCES src/editor_main.cpp src/editor_window.h src/editor_window.cpp src/editor.ui ${COMMON_SOURCES} src/background_grid.cpp src/background_grid.h)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 add_executable(${GAME_NAME} ${GAME_SOURCES})

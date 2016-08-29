@@ -10,6 +10,7 @@
 #include "debug.h"
 #include "frame_animation.h"
 #include "texture_manager.h"
+#include "background_grid.h"
 
 class EditorWindow : public QMainWindow, private Ui::EditorWindow {
 Q_OBJECT
@@ -20,9 +21,12 @@ private:
     AnimInfo animInfo;
     QTimer animTimer;
     bool animRuning;
+    BackgroundGrid grid;
 
 public:
-    EditorWindow() : anims_root(QCoreApplication::applicationDirPath() + "/../data/anims/"), item(NULL), animRuning(false) {
+    EditorWindow() :
+            anims_root(QCoreApplication::applicationDirPath() + "/../data/anims/"), item(NULL), animRuning(false), grid(
+            14, 30, 30) {
         setupUi(this);
 
         animTimer.setInterval(200);
@@ -30,6 +34,7 @@ public:
         load_anims();
 
 //        item = scene.addText("Just do it!");
+        scene.addItem(&grid);
 
         graphicsView->setScene(&scene);
 //        graphicsView->scale(14, 14);
@@ -41,7 +46,7 @@ public:
 
     void refresh_anim() {
         frameNumber->setMaximum(animInfo._frames.size() - 1);
-        if(item){
+        if (item) {
             scene.removeItem(item);
             delete item;
         }
@@ -63,7 +68,7 @@ public:
         }
 
         item = scene.addPixmap(QPixmap::fromImage(qimage));
-        item->moveBy(-frame._dx,-frame._dy);
+        item->moveBy(-frame._dx, -frame._dy);
         item->setScale(14);
         frameDx->setValue(frame._dx);
         frameDy->setValue(frame._dy);
@@ -79,16 +84,17 @@ public:
     }
 
 public slots:
+
     void on_startAnimation_clicked(bool checked) {
         animRuning = checked;
     }
 
     void on_startAnimation_toggled(bool checked) {
-        if(checked){
+        if (checked) {
             startAnimation->setText("Stop");
             animTimer.start();
             log("Check\n");
-        } else{
+        } else {
             startAnimation->setText("Start");
             animTimer.stop();
             log("&Mate\n");
@@ -96,7 +102,7 @@ public slots:
     }
 
     void anim_step() {
-        frameNumber->setValue((frameNumber->value()+1)%animInfo._frames.size());
+        frameNumber->setValue((frameNumber->value() + 1) % animInfo._frames.size());
         log("Work\n");
     }
 
@@ -113,11 +119,11 @@ public slots:
         refresh_anim();
     }
 
-    void on_speed_valueChanged(double value){
-        animTimer.setInterval(int(200/value));
+    void on_speed_valueChanged(double value) {
+        animTimer.setInterval(int(200 / value));
     }
 
-    void on_frameNumber_valueChanged(int){
+    void on_frameNumber_valueChanged(int) {
         refresh_anim();
     }
 };

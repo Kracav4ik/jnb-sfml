@@ -12,12 +12,13 @@
 #include "texture_manager.h"
 #include "background_grid.h"
 
+const int DEFAULT_ANIM_INTERVAL = 200;
+
 class EditorWindow : public QMainWindow, private Ui::EditorWindow {
 Q_OBJECT
 private:
     QString anims_root;
     QGraphicsScene scene;
-    QGraphicsItem* item;
     AnimInfo animInfo;
     QTimer animTimer;
     bool animRuning;
@@ -25,19 +26,18 @@ private:
 
 public:
     EditorWindow() :
-            anims_root(QCoreApplication::applicationDirPath() + "/../data/anims/"), item(NULL), animRuning(false), grid(
-            14, 30, 30) {
+            anims_root(QCoreApplication::applicationDirPath() + "/../data/anims/"),
+            animRuning(false),
+            grid(14, 30, 30, 5, 5)
+    {
         setupUi(this);
 
-        animTimer.setInterval(200);
+        animTimer.setInterval(DEFAULT_ANIM_INTERVAL);
 
         load_anims();
 
-//        item = scene.addText("Just do it!");
         scene.addItem(&grid);
-
         graphicsView->setScene(&scene);
-//        graphicsView->scale(14, 14);
 
         connect(&animTimer, SIGNAL(timeout()), this, SLOT(anim_step()));
 
@@ -46,30 +46,12 @@ public:
 
     void refresh_anim() {
         frameNumber->setMaximum(animInfo._frames.size() - 1);
-        if (item) {
-            scene.removeItem(item);
-            delete item;
-        }
         Frame& frame = animInfo._frames[frameNumber->value()];
-        int w = frame._w;
-        int h = frame._h;
-        QImage qimage(w, h, QImage::Format_ARGB32);
-
-        qimage.fill(Qt::cyan);
 
         TextureManager& manager = TextureManager::inst();
         Image& image = manager.get_image(animInfo._tex_name.c_str());
+        grid.setImageFrame(&image, &frame);
 
-        for (unsigned int x = 0; x < w; x++) {
-            for (unsigned int y = 0; y < h; y++) {
-                const Color& c = image.getPixel(frame._x + x, frame._y + y);
-                qimage.setPixelColor(x, y, QColor(c.r, c.g, c.b, 255));
-            }
-        }
-
-        item = scene.addPixmap(QPixmap::fromImage(qimage));
-        item->moveBy(-frame._dx, -frame._dy);
-        item->setScale(14);
         frameDx->setValue(frame._dx);
         frameDy->setValue(frame._dy);
     }
@@ -115,12 +97,11 @@ public slots:
         startAnimation->setChecked(has_animation && animRuning);
         startAnimation->setEnabled(has_animation);
 
-
         refresh_anim();
     }
 
     void on_speed_valueChanged(double value) {
-        animTimer.setInterval(int(200 / value));
+        animTimer.setInterval(int(DEFAULT_ANIM_INTERVAL / value));
     }
 
     void on_frameNumber_valueChanged(int) {

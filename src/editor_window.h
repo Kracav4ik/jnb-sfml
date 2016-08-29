@@ -65,6 +65,8 @@ public:
         item = scene.addPixmap(QPixmap::fromImage(qimage));
         item->moveBy(-frame._dx,-frame._dy);
         item->setScale(14);
+        frameDx->setValue(frame._dx);
+        frameDy->setValue(frame._dy);
     }
 
     void load_anims() {

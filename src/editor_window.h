@@ -32,7 +32,7 @@ public:
 //        item = scene.addText("Just do it!");
 
         graphicsView->setScene(&scene);
-        graphicsView->scale(14, 14);
+//        graphicsView->scale(14, 14);
 
         connect(&animTimer, SIGNAL(timeout()), this, SLOT(anim_step()));
 
@@ -64,6 +64,7 @@ public:
 
         item = scene.addPixmap(QPixmap::fromImage(qimage));
         item->moveBy(-frame._dx,-frame._dy);
+        item->setScale(14);
     }
 
     void load_anims() {

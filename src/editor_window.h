@@ -63,6 +63,7 @@ public:
         }
 
         item = scene.addPixmap(QPixmap::fromImage(qimage));
+        item->moveBy(-frame._dx,-frame._dy);
     }
 
     void load_anims() {

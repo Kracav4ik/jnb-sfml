@@ -37,11 +37,11 @@ public:
         painter->drawRect(boundingRect());
 
         if(_image && _frame){
-            for (unsigned int x = 0; x < _frame->_w; x++) {
-                for (unsigned int y = 0; y < _frame->_h; y++) {
-                    const Color& c = _image->getPixel(_frame->_x + x, _frame->_y + y);
+            for (unsigned int x = 0; x < _frame->w(); x++) {
+                for (unsigned int y = 0; y < _frame->h(); y++) {
+                    const Color& c = _image->getPixel(_frame->x() + x, _frame->y() + y);
                     painter->setBrush(QColor(c.r, c.g, c.b, 255));
-                    painter->drawRect(_cellSize*(x + _globalOffsetY - _frame->_dx),_cellSize*(y + _globalOffsetY - _frame->_dy),_cellSize,_cellSize);
+                    painter->drawRect(_cellSize*(x + _globalOffsetY - _frame->dx()),_cellSize*(y + _globalOffsetY - _frame->dy()),_cellSize,_cellSize);
                 }
             }
 

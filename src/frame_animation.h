@@ -9,13 +9,28 @@
 
 using namespace sf;
 
+struct IntPoint2D {
+    int x;
+    int y;
+
+    IntPoint2D(int x=0, int y=0) : x(x), y(y) {}
+};
+
 struct Frame {
-    int _x;
-    int _y;
-    int _w;
-    int _h;
-    int _dx;
-    int _dy;
+    IntPoint2D pos;
+    IntPoint2D size;
+    IntPoint2D offset;
+
+    int x() const { return pos.x; }
+    int y() const { return pos.y; }
+
+    int w() const { return size.x; }
+    int h() const { return size.y; }
+
+    int  dx() const { return offset.x; }
+    int& dx()       { return offset.x; }
+    int  dy() const { return offset.y; }
+    int& dy()       { return offset.y; }
 
     Frame(int x, int y, int w, int h, int dx, int dy);
 };

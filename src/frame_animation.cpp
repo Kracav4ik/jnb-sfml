@@ -17,20 +17,19 @@ void FrameAnim::draw(RenderWindow& window) const {
 
     Sprite sprite;
     sprite.setTexture(*_tex);
-    sprite.setTextureRect(IntRect(frame._x, frame._y, frame._w, frame._h));
-    sprite.setPosition(_x - frame._dx * _scale, _y - frame._dy * _scale);
+    sprite.setTextureRect(IntRect(frame.x(), frame.y(), frame.w(), frame.h()));
+    sprite.setPosition(_x - frame.dx() * _scale, _y - frame.dy() * _scale);
     sprite.setScale(_scale, _scale);
     window.draw(sprite);
 }
 
 
 Frame::Frame(int x, int y, int w, int h, int dx, int dy) :
-        _x(x),
-        _y(y),
-        _w(w),
-        _h(h),
-        _dx(dx),
-        _dy(dy) {}
+        pos(x, y),
+        size(w, h),
+        offset(dx, dy)
+{
+}
 
 AnimInfo::AnimInfo() {}
 
@@ -83,7 +82,7 @@ void AnimInfo::save(const FilePath& path) {
     fprintf(file, "%s", _tex_name.c_str());
     for (int i = 0; i < _frames.size(); i++) {
         Frame& frame = _frames[i];
-        fprintf(file, "\n%d %d %d %d %d %d", frame._x, frame._y, frame._w, frame._h, frame._dx, frame._dy);
+        fprintf(file, "\n%d %d %d %d %d %d", frame.x(), frame.y(), frame.w(), frame.h(), frame.dx(), frame.dy());
     }
     fclose(file);
 }

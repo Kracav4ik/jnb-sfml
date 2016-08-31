@@ -62,8 +62,8 @@ public:
         Image& image = manager.get_image(animInfo._tex_name.c_str());
         grid.setImageFrame(&image, &frame);
 
-        frameDx->setValue(frame._dx);
-        frameDy->setValue(frame._dy);
+        frameDx->setValue(frame.dx());
+        frameDy->setValue(frame.dy());
 
         unDo->setDisabled(currentDiff == 0);
         if (maxCurrentDiff < currentDiff) {
@@ -138,26 +138,26 @@ public slots:
     }
 
     void on_frameDx_valueChanged(int i) {
-        if ( i == grid._frame->_dx){
+        if ( i == grid._frame->dx()){
             return;
         }
         currentDiff++;
-        grid._frame->_dx = i;
+        grid._frame->dx() = i;
         reDo->setEnabled(false);
         diff[currentDiff][0] = i;
-        diff[currentDiff][1] = grid._frame->_dy;
+        diff[currentDiff][1] = grid._frame->dy();
         maxCurrentDiff = currentDiff;
         refresh_anim();
     }
 
     void on_frameDy_valueChanged(int i) {
-        if ( i == grid._frame->_dy){
+        if ( i == grid._frame->dy()){
             return;
         }
         currentDiff++;
-        grid._frame->_dy = i;
+        grid._frame->dy() = i;
         reDo->setEnabled(false);
-        diff[currentDiff][0] = grid._frame->_dx;
+        diff[currentDiff][0] = grid._frame->dx();
         diff[currentDiff][1] = i;
         maxCurrentDiff = currentDiff;
         refresh_anim();
@@ -167,8 +167,8 @@ public slots:
         log("undo\n");
         currentDiff--;
 
-        grid._frame->_dy = diff[currentDiff][1];
-        grid._frame->_dx = diff[currentDiff][0];
+        grid._frame->dy() = diff[currentDiff][1];
+        grid._frame->dx() = diff[currentDiff][0];
 
         reDo->setEnabled(true);
         refresh_anim();
@@ -178,8 +178,8 @@ public slots:
         log("redo\n");
         currentDiff++;
 
-        grid._frame->_dy = diff[currentDiff][1];
-        grid._frame->_dx = diff[currentDiff][0];
+        grid._frame->dy() = diff[currentDiff][1];
+        grid._frame->dx() = diff[currentDiff][0];
 
         refresh_anim();
     }

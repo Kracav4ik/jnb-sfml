@@ -55,6 +55,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/render.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/libs/SFML-2.3.2/cmake/Modules/FindSFML.cmake" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/libs/SFML-2.3.2/doc" />
+      <excludeFolder url="file://$MODULE_DIR$/libs/SFML-2.3.2/examples" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">

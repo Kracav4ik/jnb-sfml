@@ -13,10 +13,10 @@ private:
     int _cellCountVert;
     int _globalOffsetX;
     int _globalOffsetY;
+public:
     Image* _image;
     Frame* _frame;
 
-public:
     explicit BackgroundGrid(int cellSize, int cellCountGor, int cellCountVert, int globalOffsetX, int globalOffsetY) :
             _cellSize(cellSize),
             _cellCountHor(cellCountGor),

@@ -23,6 +23,10 @@ private:
     QTimer animTimer;
     bool animRuning;
     BackgroundGrid grid;
+    std::vector<std::vector<int> > diff;
+    int currentDiff;
+    int maxCurrentDiff;
+    QString path;
 
 public:
     EditorWindow() :
@@ -41,6 +45,12 @@ public:
 
         connect(&animTimer, SIGNAL(timeout()), this, SLOT(anim_step()));
 
+        get_history_plus_n(20);
+        currentDiff = 1;
+        maxCurrentDiff = 1;
+        diff[0][0] = 2;
+        diff[0][1] = -4;
+
         show();
     }
 
@@ -54,6 +64,17 @@ public:
 
         frameDx->setValue(frame._dx);
         frameDy->setValue(frame._dy);
+
+        unDo->setDisabled(currentDiff == 0);
+        if (maxCurrentDiff < currentDiff) {
+            maxCurrentDiff = currentDiff;
+        }
+        if (currentDiff > diff.size() * 0.75) {
+            get_history_plus_n(2 * diff.size() + 10);
+        }
+        if (maxCurrentDiff == currentDiff) {
+            reDo->setEnabled(false);
+        }
     }
 
     void load_anims() {
@@ -88,14 +109,22 @@ public slots:
         log("Work\n");
     }
 
+    void on_saveFrame_clicked() {
+        log("Save\n");
+        animInfo.save(FilePath(path.toUtf8().constData()));
+    }
+
     void on_animationList_currentTextChanged(const QString& string) {
         log("%s\n", string.toUtf8().constData());
-        QString path = anims_root + string + ".txt";
+        path = anims_root + string + ".txt";
         animInfo.load(FilePath(path.toUtf8().constData()));
 
         bool has_animation = animInfo._frames.size() != 1;
         startAnimation->setChecked(has_animation && animRuning);
         startAnimation->setEnabled(has_animation);
+
+        currentDiff = 0;
+        reDo->setEnabled(false);
 
         refresh_anim();
     }
@@ -106,5 +135,62 @@ public slots:
 
     void on_frameNumber_valueChanged(int) {
         refresh_anim();
+    }
+
+    void on_frameDx_valueChanged(int i) {
+        if ( i == grid._frame->_dx){
+            return;
+        }
+        currentDiff++;
+        grid._frame->_dx = i;
+        reDo->setEnabled(false);
+        diff[currentDiff][0] = i;
+        diff[currentDiff][1] = grid._frame->_dy;
+        maxCurrentDiff = currentDiff;
+        refresh_anim();
+    }
+
+    void on_frameDy_valueChanged(int i) {
+        if ( i == grid._frame->_dy){
+            return;
+        }
+        currentDiff++;
+        grid._frame->_dy = i;
+        reDo->setEnabled(false);
+        diff[currentDiff][0] = grid._frame->_dx;
+        diff[currentDiff][1] = i;
+        maxCurrentDiff = currentDiff;
+        refresh_anim();
+    }
+
+    void on_unDo_clicked() {
+        log("undo\n");
+        currentDiff--;
+
+        grid._frame->_dy = diff[currentDiff][1];
+        grid._frame->_dx = diff[currentDiff][0];
+
+        reDo->setEnabled(true);
+        refresh_anim();
+    }
+
+    void on_reDo_clicked() {
+        log("redo\n");
+        currentDiff++;
+
+        grid._frame->_dy = diff[currentDiff][1];
+        grid._frame->_dx = diff[currentDiff][0];
+
+        refresh_anim();
+    }
+
+    void get_history_plus_n(int count) {
+        for (int _ = 0; _ < count; _++) {
+            std::vector<int> vector1 = std::vector<int>();
+            for (int __ = 0; __ < 2; __++) {
+                vector1.push_back(0);
+            }
+            diff.push_back(vector1);
+        }
     }
 };

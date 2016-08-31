@@ -23,7 +23,7 @@ private:
     QTimer animTimer;
     bool animRuning;
     BackgroundGrid grid;
-    std::vector<std::vector<int> > diff;
+    std::vector<IntPoint2D> diff;
     int currentDiff;
     int maxCurrentDiff;
     QString path;
@@ -48,8 +48,7 @@ public:
         get_history_plus_n(20);
         currentDiff = 1;
         maxCurrentDiff = 1;
-        diff[0][0] = 2;
-        diff[0][1] = -4;
+        diff[0] = IntPoint2D(2, -4);
 
         show();
     }
@@ -144,8 +143,7 @@ public slots:
         currentDiff++;
         grid._frame->dx() = i;
         reDo->setEnabled(false);
-        diff[currentDiff][0] = i;
-        diff[currentDiff][1] = grid._frame->dy();
+        diff[currentDiff] = grid._frame->offset;
         maxCurrentDiff = currentDiff;
         refresh_anim();
     }
@@ -157,8 +155,7 @@ public slots:
         currentDiff++;
         grid._frame->dy() = i;
         reDo->setEnabled(false);
-        diff[currentDiff][0] = grid._frame->dx();
-        diff[currentDiff][1] = i;
+        diff[currentDiff] = grid._frame->offset;
         maxCurrentDiff = currentDiff;
         refresh_anim();
     }
@@ -167,8 +164,7 @@ public slots:
         log("undo\n");
         currentDiff--;
 
-        grid._frame->dy() = diff[currentDiff][1];
-        grid._frame->dx() = diff[currentDiff][0];
+        grid._frame->offset = diff[currentDiff];
 
         reDo->setEnabled(true);
         refresh_anim();
@@ -178,19 +174,14 @@ public slots:
         log("redo\n");
         currentDiff++;
 
-        grid._frame->dy() = diff[currentDiff][1];
-        grid._frame->dx() = diff[currentDiff][0];
+        grid._frame->offset = diff[currentDiff];
 
         refresh_anim();
     }
 
     void get_history_plus_n(int count) {
         for (int _ = 0; _ < count; _++) {
-            std::vector<int> vector1 = std::vector<int>();
-            for (int __ = 0; __ < 2; __++) {
-                vector1.push_back(0);
-            }
-            diff.push_back(vector1);
+            diff.push_back(IntPoint2D());
         }
     }
 };

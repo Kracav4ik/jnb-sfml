@@ -14,6 +14,67 @@
 
 const int DEFAULT_ANIM_INTERVAL = 200;
 
+class UndoRedo {
+private:
+    std::vector<IntPoint2D> diff;
+    int currentDiff;
+    int maxCurrentDiff;
+
+public:
+    void initial_set() {
+        diff.clear();
+        get_history_plus_n(20);
+        currentDiff = 0;
+        maxCurrentDiff = 0;
+        diff[0] = IntPoint2D(2, -4);
+    }
+
+    bool can_undo() const { return currentDiff > 0; }
+    bool can_redo() const { return currentDiff < maxCurrentDiff; }
+
+    void save_current_offset_to_current_diff(const IntPoint2D& offset) {
+        currentDiff++;
+
+        if (currentDiff >= diff.size()) {
+            get_history_plus_n(2 * diff.size() + 10);
+        }
+
+        diff[currentDiff] = offset;
+        maxCurrentDiff = currentDiff;
+    }
+
+
+    const IntPoint2D& do_undo() {
+        log("undo\n");
+        if (!can_undo()) {
+            log("** error at undo\n");
+        }
+        currentDiff--;
+
+        return restore_offset_from_current_diff();
+    }
+
+    const IntPoint2D& do_redo() {
+        log("redo\n");
+        if (!can_redo()) {
+            log("** error at redo\n");
+        }
+        currentDiff++;
+
+        return restore_offset_from_current_diff();
+    }
+
+    const IntPoint2D& restore_offset_from_current_diff() {
+        return diff[currentDiff];
+    }
+
+    void get_history_plus_n(int count) {
+        for (int _ = 0; _ < count; _++) {
+            diff.push_back(IntPoint2D());
+        }
+    }
+};
+
 class EditorWindow : public QMainWindow, private Ui::EditorWindow {
 Q_OBJECT
 private:
@@ -24,11 +85,7 @@ private:
     bool animRuning;
     BackgroundGrid grid;
 
-
-    std::vector<IntPoint2D> diff;
-    int currentDiff;
-    int maxCurrentDiff;
-
+    UndoRedo undoRedo;
 
     QString path;
 
@@ -49,16 +106,8 @@ public:
 
         connect(&animTimer, SIGNAL(timeout()), this, SLOT(anim_step()));
 
-        initial_set();
+        undoRedo.initial_set();
         show();
-    }
-
-    void initial_set() {
-        diff.clear();
-        get_history_plus_n(20);
-        currentDiff = 0;
-        maxCurrentDiff = 0;
-        diff[0] = IntPoint2D(2, -4);
     }
 
     void refresh_anim() {
@@ -72,12 +121,9 @@ public:
         frameDx->setValue(frame.dx());
         frameDy->setValue(frame.dy());
 
-        unDo->setEnabled(can_undo());
-        reDo->setEnabled(can_redo());
+        unDo->setEnabled(undoRedo.can_undo());
+        reDo->setEnabled(undoRedo.can_redo());
     }
-
-    bool can_undo() const { return currentDiff > 0; }
-    bool can_redo() const { return currentDiff < maxCurrentDiff; }
 
     void load_anims() {
         QStringList list = QDir(anims_root).entryList();
@@ -125,7 +171,7 @@ public slots:
         startAnimation->setChecked(has_animation && animRuning);
         startAnimation->setEnabled(has_animation);
 
-        initial_set();
+        undoRedo.initial_set();
 
         refresh_anim();
     }
@@ -143,7 +189,7 @@ public slots:
             return;
         }
         grid._frame->dx() = i;
-        save_current_offset_to_current_diff();
+        undoRedo.save_current_offset_to_current_diff(grid._frame->offset);
         refresh_anim();
     }
 
@@ -152,52 +198,19 @@ public slots:
             return;
         }
         grid._frame->dy() = i;
-        save_current_offset_to_current_diff();
+        undoRedo.save_current_offset_to_current_diff(grid._frame->offset);
         refresh_anim();
     }
 
-    void save_current_offset_to_current_diff() {
-        currentDiff++;
-
-        if (currentDiff >= diff.size()) {
-            get_history_plus_n(2 * diff.size() + 10);
-        }
-
-        diff[currentDiff] = grid._frame->offset;
-        maxCurrentDiff = currentDiff;
-    }
-
     void on_unDo_clicked() {
-        log("undo\n");
-        if (!can_undo()) {
-            log("** error at undo\n");
-        }
-        currentDiff--;
-
-        restore_offset_from_current_diff();
+        grid._frame->offset = undoRedo.do_undo();
 
         refresh_anim();
     }
 
     void on_reDo_clicked() {
-        log("redo\n");
-        if (!can_redo()) {
-            log("** error at redo\n");
-        }
-        currentDiff++;
-
-        restore_offset_from_current_diff();
+        grid._frame->offset = undoRedo.do_redo();
 
         refresh_anim();
-    }
-
-    void restore_offset_from_current_diff() {
-        grid._frame->offset = diff[currentDiff];
-    }
-
-    void get_history_plus_n(int count) {
-        for (int _ = 0; _ < count; _++) {
-            diff.push_back(IntPoint2D());
-        }
     }
 };

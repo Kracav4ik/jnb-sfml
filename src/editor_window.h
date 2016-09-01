@@ -23,9 +23,13 @@ private:
     QTimer animTimer;
     bool animRuning;
     BackgroundGrid grid;
+
+
     std::vector<IntPoint2D> diff;
     int currentDiff;
     int maxCurrentDiff;
+
+
     QString path;
 
 public:
@@ -45,12 +49,16 @@ public:
 
         connect(&animTimer, SIGNAL(timeout()), this, SLOT(anim_step()));
 
-        get_history_plus_n(20);
-        currentDiff = 1;
-        maxCurrentDiff = 1;
-        diff[0] = IntPoint2D(2, -4);
-
+        initial_set();
         show();
+    }
+
+    void initial_set() {
+        diff.clear();
+        get_history_plus_n(20);
+        currentDiff = 0;
+        maxCurrentDiff = 0;
+        diff[0] = IntPoint2D(2, -4);
     }
 
     void refresh_anim() {
@@ -64,17 +72,12 @@ public:
         frameDx->setValue(frame.dx());
         frameDy->setValue(frame.dy());
 
-        unDo->setDisabled(currentDiff == 0);
-        if (maxCurrentDiff < currentDiff) {
-            maxCurrentDiff = currentDiff;
-        }
-        if (currentDiff > diff.size() * 0.75) {
-            get_history_plus_n(2 * diff.size() + 10);
-        }
-        if (maxCurrentDiff == currentDiff) {
-            reDo->setEnabled(false);
-        }
+        unDo->setEnabled(can_undo());
+        reDo->setEnabled(can_redo());
     }
+
+    bool can_undo() const { return currentDiff > 0; }
+    bool can_redo() const { return currentDiff < maxCurrentDiff; }
 
     void load_anims() {
         QStringList list = QDir(anims_root).entryList();
@@ -122,8 +125,7 @@ public slots:
         startAnimation->setChecked(has_animation && animRuning);
         startAnimation->setEnabled(has_animation);
 
-        currentDiff = 0;
-        reDo->setEnabled(false);
+        initial_set();
 
         refresh_anim();
     }
@@ -140,11 +142,8 @@ public slots:
         if ( i == grid._frame->dx()){
             return;
         }
-        currentDiff++;
         grid._frame->dx() = i;
-        reDo->setEnabled(false);
-        diff[currentDiff] = grid._frame->offset;
-        maxCurrentDiff = currentDiff;
+        save_current_offset_to_current_diff();
         refresh_anim();
     }
 
@@ -152,31 +151,48 @@ public slots:
         if ( i == grid._frame->dy()){
             return;
         }
-        currentDiff++;
         grid._frame->dy() = i;
-        reDo->setEnabled(false);
+        save_current_offset_to_current_diff();
+        refresh_anim();
+    }
+
+    void save_current_offset_to_current_diff() {
+        currentDiff++;
+
+        if (currentDiff >= diff.size()) {
+            get_history_plus_n(2 * diff.size() + 10);
+        }
+
         diff[currentDiff] = grid._frame->offset;
         maxCurrentDiff = currentDiff;
-        refresh_anim();
     }
 
     void on_unDo_clicked() {
         log("undo\n");
+        if (!can_undo()) {
+            log("** error at undo\n");
+        }
         currentDiff--;
 
-        grid._frame->offset = diff[currentDiff];
+        restore_offset_from_current_diff();
 
-        reDo->setEnabled(true);
         refresh_anim();
     }
 
     void on_reDo_clicked() {
         log("redo\n");
+        if (!can_redo()) {
+            log("** error at redo\n");
+        }
         currentDiff++;
 
-        grid._frame->offset = diff[currentDiff];
+        restore_offset_from_current_diff();
 
         refresh_anim();
+    }
+
+    void restore_offset_from_current_diff() {
+        grid._frame->offset = diff[currentDiff];
     }
 
     void get_history_plus_n(int count) {

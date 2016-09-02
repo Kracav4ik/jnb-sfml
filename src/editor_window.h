@@ -14,9 +14,10 @@
 
 const int DEFAULT_ANIM_INTERVAL = 200;
 
+template <typename T>
 class UndoRedo {
 private:
-    std::vector<IntPoint2D> diff;
+    std::vector<T> diff;
     int currentDiff;
     int maxCurrentDiff;
 
@@ -34,38 +35,38 @@ public:
     bool can_undo() const { return !diff.empty() && currentDiff > 0; }
     bool can_redo() const { return !diff.empty() && currentDiff < maxCurrentDiff; }
 
-    void push_offset(const IntPoint2D& offset) {
+    void push_value(const T& value) {
         currentDiff++;
 
         if (currentDiff >= diff.size()) {
             diff.resize(2 * diff.size() + 10);
         }
 
-        diff[currentDiff] = offset;
+        diff[currentDiff] = value;
         maxCurrentDiff = currentDiff;
     }
 
-    const IntPoint2D& do_undo() {
+    const T& do_undo() {
         log("undo\n");
         if (!can_undo()) {
             log("** error at undo\n");
         }
         currentDiff--;
 
-        return peek_offset();
+        return peek_value();
     }
 
-    const IntPoint2D& do_redo() {
+    const T& do_redo() {
         log("redo\n");
         if (!can_redo()) {
             log("** error at redo\n");
         }
         currentDiff++;
 
-        return peek_offset();
+        return peek_value();
     }
 
-    const IntPoint2D& peek_offset() {
+    const T& peek_value() {
         return diff[currentDiff];
     }
 };
@@ -80,7 +81,7 @@ private:
     bool animRuning;
     BackgroundGrid grid;
 
-    UndoRedo undoRedo;
+    UndoRedo<AnimInfo::Frames> undoRedo;
 
     QString path;
 
@@ -168,7 +169,7 @@ public slots:
         undoRedo.initial_set();
 
         refresh_anim();
-        undoRedo.push_offset(grid._frame->offset);
+        undoRedo.push_value(animInfo._frames);
     }
 
     void on_speed_valueChanged(double value) {
@@ -184,7 +185,7 @@ public slots:
             return;
         }
         grid._frame->dx() = i;
-        undoRedo.push_offset(grid._frame->offset);
+        undoRedo.push_value(animInfo._frames);
         refresh_anim();
     }
 
@@ -193,18 +194,20 @@ public slots:
             return;
         }
         grid._frame->dy() = i;
-        undoRedo.push_offset(grid._frame->offset);
+        undoRedo.push_value(animInfo._frames);
         refresh_anim();
     }
 
     void on_unDo_clicked() {
-        grid._frame->offset = undoRedo.do_undo();
+        animInfo._frames = undoRedo.do_undo();
+        grid.setFrame(&animInfo._frames[frameNumber->value()]);
 
         refresh_anim();
     }
 
     void on_reDo_clicked() {
-        grid._frame->offset = undoRedo.do_redo();
+        animInfo._frames = undoRedo.do_redo();
+        grid.setFrame(&animInfo._frames[frameNumber->value()]);
 
         refresh_anim();
     }

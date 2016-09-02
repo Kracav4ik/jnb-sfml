@@ -39,9 +39,14 @@ public:
         if(_image && _frame){
             for (unsigned int x = 0; x < _frame->w(); x++) {
                 for (unsigned int y = 0; y < _frame->h(); y++) {
+                    int frameX = x + _globalOffsetY - _frame->dx();
+                    int frameY = y + _globalOffsetY - _frame->dy();
+                    if (frameX < 0 || frameY < 0 || frameX >= _cellCountHor || frameY >= _cellCountVert) {
+                        continue;
+                    }
                     const Color& c = _image->getPixel(_frame->x() + x, _frame->y() + y);
                     painter->setBrush(QColor(c.r, c.g, c.b, 255));
-                    painter->drawRect(_cellSize*(x + _globalOffsetY - _frame->dx()),_cellSize*(y + _globalOffsetY - _frame->dy()),_cellSize,_cellSize);
+                    painter->drawRect(_cellSize * frameX, _cellSize * frameY, _cellSize, _cellSize);
                 }
             }
 
@@ -58,9 +63,13 @@ public:
         }
     }
 
-    void setImageFrame(Image* image, Frame* frame) {
-        _image = image;
+    void setFrame(Frame* frame) {
         _frame = frame;
         update();
+    }
+
+    void setImageFrame(Image* image, Frame* frame) {
+        _image = image;
+        setFrame(frame);
     }
 };

@@ -36,7 +36,8 @@ struct Frame {
 };
 
 struct AnimInfo{
-    std::vector<Frame> _frames;
+    typedef std::vector<Frame> Frames;
+    Frames _frames;
     std::string _tex_name;
 
     AnimInfo();

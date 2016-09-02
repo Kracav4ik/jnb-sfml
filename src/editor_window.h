@@ -113,6 +113,8 @@ public:
 
         load_anims();
 
+        grid._showBg = showBg->isChecked();
+
         scene.addItem(&grid);
         graphicsView->setScene(&scene);
 
@@ -230,5 +232,10 @@ public slots:
         grid.setFrame(&animInfo._frames[frameNumber->value()]);
 
         refresh_anim();
+    }
+
+    void on_showBg_stateChanged(int){
+        grid._showBg = showBg->isChecked();
+        grid.update();
     }
 };

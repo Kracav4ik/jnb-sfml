@@ -14,6 +14,7 @@ private:
     int _globalOffsetX;
     int _globalOffsetY;
 public:
+    bool _showBg;
     Image* _image;
     Frame* _frame;
 
@@ -24,7 +25,8 @@ public:
             _globalOffsetX(globalOffsetX),
             _globalOffsetY(globalOffsetY),
             _image(NULL),
-            _frame(NULL)
+            _frame(NULL),
+            _showBg(true)
     {}
 
     QRectF boundingRect() const override {
@@ -45,7 +47,11 @@ public:
                         continue;
                     }
                     const Color& c = _image->getPixel(_frame->x() + x, _frame->y() + y);
-                    painter->setBrush(QColor(c.r, c.g, c.b, 255));
+                    Uint8 alpha = c.a;
+                    if(_showBg){
+                        alpha = 255;
+                    }
+                    painter->setBrush(QColor(c.r, c.g, c.b, alpha));
                     painter->drawRect(_cellSize * frameX, _cellSize * frameY, _cellSize, _cellSize);
                 }
             }

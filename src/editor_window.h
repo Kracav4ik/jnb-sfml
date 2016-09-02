@@ -20,29 +20,25 @@ private:
     int currentDiff;
     int maxCurrentDiff;
 
-    void get_history_plus_n(int count) {
-        for (int _ = 0; _ < count; _++) {
-            diff.push_back(IntPoint2D());
-        }
+public:
+    UndoRedo() {
+        initial_set();
     }
 
-public:
     void initial_set() {
         diff.clear();
-        get_history_plus_n(20);
-        currentDiff = 0;
-        maxCurrentDiff = 0;
-        diff[0] = IntPoint2D(2, -4);
+        currentDiff = -1;
+        maxCurrentDiff = -1;
     }
 
-    bool can_undo() const { return currentDiff > 0; }
-    bool can_redo() const { return currentDiff < maxCurrentDiff; }
+    bool can_undo() const { return !diff.empty() && currentDiff > 0; }
+    bool can_redo() const { return !diff.empty() && currentDiff < maxCurrentDiff; }
 
     void push_offset(const IntPoint2D& offset) {
         currentDiff++;
 
         if (currentDiff >= diff.size()) {
-            get_history_plus_n(2 * diff.size() + 10);
+            diff.resize(2 * diff.size() + 10);
         }
 
         diff[currentDiff] = offset;
@@ -105,7 +101,6 @@ public:
 
         connect(&animTimer, SIGNAL(timeout()), this, SLOT(anim_step()));
 
-        undoRedo.initial_set();
         show();
     }
 
@@ -173,6 +168,7 @@ public slots:
         undoRedo.initial_set();
 
         refresh_anim();
+        undoRedo.push_offset(grid._frame->offset);
     }
 
     void on_speed_valueChanged(double value) {

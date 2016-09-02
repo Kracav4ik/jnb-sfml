@@ -15,6 +15,7 @@ struct IntPoint2D {
 
     IntPoint2D(int x=0, int y=0) : x(x), y(y) {}
 };
+bool operator==(const IntPoint2D& p1, const IntPoint2D& p2);
 
 struct Frame {
     IntPoint2D pos;
@@ -34,6 +35,7 @@ struct Frame {
 
     Frame(int x, int y, int w, int h, int dx, int dy);
 };
+bool operator==(const Frame& f1, const Frame& f2);
 
 struct AnimInfo{
     typedef std::vector<Frame> Frames;

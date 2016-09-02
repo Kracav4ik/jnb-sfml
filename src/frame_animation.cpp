@@ -86,3 +86,11 @@ void AnimInfo::save(const FilePath& path) {
     }
     fclose(file);
 }
+
+bool operator==(const IntPoint2D& p1, const IntPoint2D& p2) {
+    return p1.x == p2.x && p1.y == p2.y;
+}
+
+bool operator==(const Frame& f1, const Frame& f2) {
+    return f1.pos == f2.pos && f1.size == f2.size && f1.offset == f2.offset;
+}

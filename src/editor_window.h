@@ -20,6 +20,8 @@ private:
     std::vector<T> diff;
     int currentDiff;
     int maxCurrentDiff;
+    int savedAtDiff;
+    static const int OUTSIDE = -1;
 
 public:
     UndoRedo() {
@@ -28,12 +30,19 @@ public:
 
     void initial_set() {
         diff.clear();
-        currentDiff = -1;
-        maxCurrentDiff = -1;
+        currentDiff = OUTSIDE;
+        maxCurrentDiff = OUTSIDE;
+        savedAtDiff = OUTSIDE;
     }
 
     bool can_undo() const { return !diff.empty() && currentDiff > 0; }
     bool can_redo() const { return !diff.empty() && currentDiff < maxCurrentDiff; }
+    bool has_changes() const {
+        if (currentDiff == OUTSIDE || savedAtDiff == OUTSIDE) {
+            return currentDiff != savedAtDiff;
+        }
+        return diff[currentDiff] != diff[savedAtDiff];
+    }
 
     void push_value(const T& value) {
         currentDiff++;
@@ -43,6 +52,9 @@ public:
         }
 
         diff[currentDiff] = value;
+        if (savedAtDiff >= currentDiff) {
+            savedAtDiff = OUTSIDE;
+        }
         maxCurrentDiff = currentDiff;
     }
 
@@ -68,6 +80,10 @@ public:
 
     const T& peek_value() {
         return diff[currentDiff];
+    }
+
+    void notify_saved() {
+        savedAtDiff = currentDiff;
     }
 };
 
@@ -118,6 +134,7 @@ public:
 
         unDo->setEnabled(undoRedo.can_undo());
         reDo->setEnabled(undoRedo.can_redo());
+        saveFrame->setEnabled(undoRedo.has_changes());
     }
 
     void load_anims() {
@@ -155,6 +172,8 @@ public slots:
     void on_saveFrame_clicked() {
         log("Save\n");
         animInfo.save(FilePath(path.toUtf8().constData()));
+        undoRedo.notify_saved();
+        refresh_anim();
     }
 
     void on_animationList_currentTextChanged(const QString& string) {
@@ -170,6 +189,7 @@ public slots:
 
         refresh_anim();
         undoRedo.push_value(animInfo._frames);
+        undoRedo.notify_saved();
     }
 
     void on_speed_valueChanged(double value) {

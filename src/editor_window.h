@@ -20,6 +20,12 @@ private:
     int currentDiff;
     int maxCurrentDiff;
 
+    void get_history_plus_n(int count) {
+        for (int _ = 0; _ < count; _++) {
+            diff.push_back(IntPoint2D());
+        }
+    }
+
 public:
     void initial_set() {
         diff.clear();
@@ -32,7 +38,7 @@ public:
     bool can_undo() const { return currentDiff > 0; }
     bool can_redo() const { return currentDiff < maxCurrentDiff; }
 
-    void save_current_offset_to_current_diff(const IntPoint2D& offset) {
+    void push_offset(const IntPoint2D& offset) {
         currentDiff++;
 
         if (currentDiff >= diff.size()) {
@@ -43,7 +49,6 @@ public:
         maxCurrentDiff = currentDiff;
     }
 
-
     const IntPoint2D& do_undo() {
         log("undo\n");
         if (!can_undo()) {
@@ -51,7 +56,7 @@ public:
         }
         currentDiff--;
 
-        return restore_offset_from_current_diff();
+        return peek_offset();
     }
 
     const IntPoint2D& do_redo() {
@@ -61,17 +66,11 @@ public:
         }
         currentDiff++;
 
-        return restore_offset_from_current_diff();
+        return peek_offset();
     }
 
-    const IntPoint2D& restore_offset_from_current_diff() {
+    const IntPoint2D& peek_offset() {
         return diff[currentDiff];
-    }
-
-    void get_history_plus_n(int count) {
-        for (int _ = 0; _ < count; _++) {
-            diff.push_back(IntPoint2D());
-        }
     }
 };
 
@@ -189,7 +188,7 @@ public slots:
             return;
         }
         grid._frame->dx() = i;
-        undoRedo.save_current_offset_to_current_diff(grid._frame->offset);
+        undoRedo.push_offset(grid._frame->offset);
         refresh_anim();
     }
 
@@ -198,7 +197,7 @@ public slots:
             return;
         }
         grid._frame->dy() = i;
-        undoRedo.save_current_offset_to_current_diff(grid._frame->offset);
+        undoRedo.push_offset(grid._frame->offset);
         refresh_anim();
     }
 

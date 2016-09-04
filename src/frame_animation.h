@@ -17,21 +17,23 @@ struct IntPoint2D {
 };
 bool operator==(const IntPoint2D& p1, const IntPoint2D& p2);
 
+#define GETTER_SETTER(NAME, CODE)                       \
+    decltype(CODE)  NAME() const { return CODE; }       \
+    decltype(CODE)& NAME()       { return CODE; }
+
 struct Frame {
     IntPoint2D pos;
     IntPoint2D size;
     IntPoint2D offset;
 
-    int x() const { return pos.x; }
-    int y() const { return pos.y; }
+    GETTER_SETTER(x, pos.x)
+    GETTER_SETTER(y, pos.y)
 
-    int w() const { return size.x; }
-    int h() const { return size.y; }
+    GETTER_SETTER(w, size.x)
+    GETTER_SETTER(h, size.y)
 
-    int  dx() const { return offset.x; }
-    int& dx()       { return offset.x; }
-    int  dy() const { return offset.y; }
-    int& dy()       { return offset.y; }
+    GETTER_SETTER(dx, offset.x)
+    GETTER_SETTER(dy, offset.y)
 
     Frame(int x, int y, int w, int h, int dx, int dy);
 };

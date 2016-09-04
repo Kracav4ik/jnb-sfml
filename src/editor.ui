@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>888</width>
-    <height>504</height>
+    <height>524</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,7 +111,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QSpinBox" name="frameDx">
+        <widget class="QSpinBox" name="frame_dx">
          <property name="readOnly">
           <bool>false</bool>
          </property>
@@ -132,9 +132,6 @@
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="label_4">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
          <property name="text">
           <string>Frame dy</string>
          </property>
@@ -151,7 +148,7 @@
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QSpinBox" name="frameDy">
+        <widget class="QSpinBox" name="frame_dy">
          <property name="readOnly">
           <bool>false</bool>
          </property>
@@ -165,9 +162,6 @@
        </item>
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
          <property name="text">
           <string>Frame dx</string>
          </property>
@@ -180,7 +174,7 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="1">
+       <item row="19" column="1">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -193,17 +187,14 @@
          </property>
         </spacer>
        </item>
-       <item row="7" column="0" colspan="2">
+       <item row="16" column="0" colspan="2">
         <widget class="QPushButton" name="unDo">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <property name="text">
           <string>Undo</string>
          </property>
         </widget>
        </item>
-       <item row="12" column="0" colspan="2">
+       <item row="21" column="0" colspan="2">
         <widget class="QToolButton" name="startAnimation">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -225,30 +216,123 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="2">
+       <item row="15" column="0" colspan="2">
         <widget class="QPushButton" name="saveFrame">
          <property name="text">
           <string>Save</string>
          </property>
         </widget>
        </item>
-       <item row="9" column="0" colspan="2">
+       <item row="18" column="0" colspan="2">
         <widget class="QPushButton" name="reDo">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
          <property name="text">
           <string>Redo</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="13" column="0" colspan="2">
         <widget class="QCheckBox" name="showBg">
          <property name="text">
           <string>Show background</string>
          </property>
          <property name="checked">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QSpinBox" name="frame_x">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="0" colspan="2">
+        <widget class="QCheckBox" name="showTex">
+         <property name="text">
+          <string>Show texture</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>Frame H</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Frame W</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QSpinBox" name="frame_w">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QSpinBox" name="frame_h">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Frame Y</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Frame X</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QSpinBox" name="frame_y">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>0</number>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
          </property>
         </widget>
        </item>

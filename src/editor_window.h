@@ -87,6 +87,26 @@ public:
     }
 };
 
+#define APPLY_ALL(MACRO)        \
+    MACRO(x)                    \
+    MACRO(y)                    \
+    MACRO(w)                    \
+    MACRO(h)                    \
+    MACRO(dx)                   \
+    MACRO(dy)
+
+#define ON_VALUE_CHANGED(NAME)                              \
+    void on_frame_##NAME##_valueChanged(int i) {            \
+        if (i == grid._frame->NAME()) {                     \
+            return;                                         \
+        }                                                   \
+        grid._frame->NAME() = i;                            \
+        undoRedo.push_value(animInfo._frames);              \
+        refresh_anim();                                     \
+    }
+
+#define SET_VALUE(NAME) frame_##NAME->setValue(frame.NAME());
+
 class EditorWindow : public QMainWindow, private Ui::EditorWindow {
 Q_OBJECT
 private:
@@ -138,8 +158,7 @@ public:
         Image& image = manager.get_image(animInfo._tex_name.c_str());
         grid.setImageFrame(&image, &frame);
 
-        frameDx->setValue(frame.dx());
-        frameDy->setValue(frame.dy());
+        APPLY_ALL(SET_VALUE)
 
         unDo->setEnabled(undoRedo.can_undo());
         reDo->setEnabled(undoRedo.can_redo());
@@ -243,23 +262,7 @@ public slots:
         refresh_anim();
     }
 
-    void on_frameDx_valueChanged(int i) {
-        if (i == grid._frame->dx()) {
-            return;
-        }
-        grid._frame->dx() = i;
-        undoRedo.push_value(animInfo._frames);
-        refresh_anim();
-    }
-
-    void on_frameDy_valueChanged(int i) {
-        if (i == grid._frame->dy()) {
-            return;
-        }
-        grid._frame->dy() = i;
-        undoRedo.push_value(animInfo._frames);
-        refresh_anim();
-    }
+    APPLY_ALL(ON_VALUE_CHANGED)
 
     void on_unDo_clicked() {
         animInfo._frames = undoRedo.do_undo();

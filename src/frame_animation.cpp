@@ -43,9 +43,10 @@ void AnimInfo::load(const FilePath& path) {
         printf("cannot open for read \"%s\"\n", path.str());
         return;
     }
+    clear();
+
     _tex_name = strip(file.read_line());
     std::string current_frame = file.read_line();
-    _frames.clear();
 
     while (!current_frame.empty()) {
         std::string result;
@@ -71,6 +72,11 @@ void AnimInfo::load(const FilePath& path) {
         _frames.push_back(Frame(xx, yy, w, h, dx, dy));
         current_frame = file.read_line();
     }
+}
+
+void AnimInfo::clear() {
+    _tex_name = "";
+    _frames.clear();
 }
 
 void AnimInfo::save(const FilePath& path) {

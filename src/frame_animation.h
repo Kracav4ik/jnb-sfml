@@ -48,6 +48,10 @@ struct AnimInfo{
 
     void load(const FilePath& path);
 
+    void clear();
+
+    bool empty() const { return _frames.empty(); }
+
     void save(const FilePath& path);
 };
 

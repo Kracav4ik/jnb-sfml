@@ -14,7 +14,7 @@
 
 const int DEFAULT_ANIM_INTERVAL = 200;
 
-template <typename T>
+template<typename T>
 class UndoRedo {
 private:
     std::vector<T> diff;
@@ -36,7 +36,9 @@ public:
     }
 
     bool can_undo() const { return !diff.empty() && currentDiff > 0; }
+
     bool can_redo() const { return !diff.empty() && currentDiff < maxCurrentDiff; }
+
     bool has_changes() const {
         if (currentDiff == OUTSIDE || savedAtDiff == OUTSIDE) {
             return currentDiff != savedAtDiff;
@@ -59,7 +61,6 @@ public:
     }
 
     const T& do_undo() {
-        log("undo\n");
         if (!can_undo()) {
             log("** error at undo\n");
         }
@@ -69,7 +70,6 @@ public:
     }
 
     const T& do_redo() {
-        log("redo\n");
         if (!can_redo()) {
             log("** error at redo\n");
         }
@@ -96,6 +96,7 @@ private:
     QTimer animTimer;
     bool animRuning;
     BackgroundGrid grid;
+    QStringList animNames;
 
     UndoRedo<AnimInfo::Frames> undoRedo;
 
@@ -121,9 +122,15 @@ public:
         connect(&animTimer, SIGNAL(timeout()), this, SLOT(anim_step()));
 
         show();
+
+        on_filterAnim_textChanged("");
     }
 
     void refresh_anim() {
+        if (animInfo.empty()) {
+            grid.setImageFrame(NULL, NULL);
+            return;
+        }
         frameNumber->setMaximum(animInfo._frames.size() - 1);
         Frame& frame = animInfo._frames[frameNumber->value()];
 
@@ -140,11 +147,13 @@ public:
     }
 
     void load_anims() {
-        QStringList list = QDir(anims_root).entryList();
+        animNames.clear();
+        QStringList fileNames = QDir(anims_root).entryList();
 
-        for (int i = 2; i < list.size(); i++) {
-            QString str = list[i];
-            animationList->addItem(str.left(str.size() - 4));
+        for (QString file : fileNames) {
+            if (file.endsWith(".txt")) {
+                animNames.push_back(file.left(file.size() - 4));
+            }
         }
     }
 
@@ -158,40 +167,72 @@ public slots:
         if (checked) {
             startAnimation->setText("Stop");
             animTimer.start();
-            log("Check\n");
         } else {
             startAnimation->setText("Start");
             animTimer.stop();
-            log("&Mate\n");
         }
     }
 
     void anim_step() {
         frameNumber->setValue((frameNumber->value() + 1) % animInfo._frames.size());
-        log("Work\n");
     }
 
     void on_saveFrame_clicked() {
-        log("Save\n");
         animInfo.save(FilePath(path.toUtf8().constData()));
         undoRedo.notify_saved();
         refresh_anim();
     }
 
-    void on_animationList_currentTextChanged(const QString& string) {
-        log("%s\n", string.toUtf8().constData());
-        path = anims_root + string + ".txt";
-        animInfo.load(FilePath(path.toUtf8().constData()));
+    void on_filterAnim_textChanged(QString filter) {
+        filter = filter.trimmed();
 
-        bool has_animation = animInfo._frames.size() != 1;
-        startAnimation->setChecked(has_animation && animRuning);
-        startAnimation->setEnabled(has_animation);
+        QStringList filterWords = filter.split(" ", QString::SkipEmptyParts);
+        QStringList filteredNames;
 
-        undoRedo.initial_set();
+        for (QString name : animNames) {
+            bool addName = true;
+            for (QString word : filterWords) {
+                if (!name.contains(word)) {
+                    addName = false;
+                    break;
+                }
+            }
+            if (addName) {
+                filteredNames.append(name);
+            }
+        }
+
+        animationList->clear();
+        animationList->addItems(filteredNames);
 
         refresh_anim();
-        undoRedo.push_value(animInfo._frames);
-        undoRedo.notify_saved();
+    }
+
+    void on_clearFilter_clicked() {
+        filterAnim->clear();
+    }
+
+    void on_animationList_currentTextChanged(const QString& string) {
+        bool haveFile = !string.isEmpty();
+        frameEditors->setEnabled(haveFile);
+        
+        undoRedo.initial_set();
+        if (haveFile) {
+            path = anims_root + string + ".txt";
+            animInfo.load(FilePath(path.toUtf8().constData()));
+
+            bool has_animation = animInfo._frames.size() != 1;
+            startAnimation->setChecked(has_animation && animRuning);
+            startAnimation->setEnabled(has_animation);
+
+            undoRedo.push_value(animInfo._frames);
+            undoRedo.notify_saved();
+        } else {
+            path = "";
+            animInfo.clear();
+        }
+
+        refresh_anim();
     }
 
     void on_speed_valueChanged(double value) {
@@ -203,7 +244,7 @@ public slots:
     }
 
     void on_frameDx_valueChanged(int i) {
-        if ( i == grid._frame->dx()){
+        if (i == grid._frame->dx()) {
             return;
         }
         grid._frame->dx() = i;
@@ -212,7 +253,7 @@ public slots:
     }
 
     void on_frameDy_valueChanged(int i) {
-        if ( i == grid._frame->dy()){
+        if (i == grid._frame->dy()) {
             return;
         }
         grid._frame->dy() = i;
@@ -234,7 +275,7 @@ public slots:
         refresh_anim();
     }
 
-    void on_showBg_stateChanged(int){
+    void on_showBg_stateChanged(int) {
         grid._showBg = showBg->isChecked();
         grid.update();
     }

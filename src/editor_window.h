@@ -97,10 +97,10 @@ public:
 
 #define ON_VALUE_CHANGED(NAME)                              \
     void on_frame_##NAME##_valueChanged(int i) {            \
-        if (i == grid._frame->NAME()) {                     \
+        if (i == currentFrame().NAME()) {                     \
             return;                                         \
         }                                                   \
-        grid._frame->NAME() = i;                            \
+        currentFrame().NAME() = i;                            \
         undoRedo.push_value(animInfo._frames);              \
         refresh_anim();                                     \
     }
@@ -126,7 +126,7 @@ public:
     EditorWindow() :
             anims_root(QCoreApplication::applicationDirPath() + "/../data/anims/"),
             animRuning(false),
-            grid(14, 30, 30, 5, 5)
+            grid(10, 50, 50, 15, 15)
     {
         setupUi(this);
 
@@ -159,6 +159,9 @@ public:
         grid.setImageFrame(&image, &frame);
 
         APPLY_ALL(SET_VALUE)
+
+        frame_x->setMaximum(image.getSize().x - 1);
+        frame_y->setMaximum(image.getSize().y - 1);
 
         unDo->setEnabled(undoRedo.can_undo());
         reDo->setEnabled(undoRedo.can_redo());
@@ -264,22 +267,29 @@ public slots:
 
     APPLY_ALL(ON_VALUE_CHANGED)
 
+    GETTER_SETTER_TYPE_REF(Frame, currentFrame, animInfo._frames[frameNumber->value()])
+
     void on_unDo_clicked() {
         animInfo._frames = undoRedo.do_undo();
-        grid.setFrame(&animInfo._frames[frameNumber->value()]);
+        grid.setFrame(&currentFrame());
 
         refresh_anim();
     }
 
     void on_reDo_clicked() {
         animInfo._frames = undoRedo.do_redo();
-        grid.setFrame(&animInfo._frames[frameNumber->value()]);
+        grid.setFrame(&currentFrame());
 
         refresh_anim();
     }
 
     void on_showBg_stateChanged(int) {
         grid._showBg = showBg->isChecked();
+        grid.update();
+    }
+
+    void on_showTex_stateChanged(int){
+        grid._showTex = showTex->isChecked();
         grid.update();
     }
 };

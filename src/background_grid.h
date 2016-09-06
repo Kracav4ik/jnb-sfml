@@ -14,10 +14,12 @@ private:
     int _globalOffsetX;
     int _globalOffsetY;
     const Image* _image;
-    const Frame* _frame;
+    const AnimInfo::Frames* _frames;
+    int _frameIdx;
 public:
     bool _showBg;
     bool _showTex;
+    bool _showBaseline;
 
     explicit BackgroundGrid(int cellSize, int cellCountGor, int cellCountVert, int globalOffsetX, int globalOffsetY) :
             _cellSize(cellSize),
@@ -25,10 +27,12 @@ public:
             _cellCountVert(cellCountVert),
             _globalOffsetX(globalOffsetX),
             _globalOffsetY(globalOffsetY),
+            _image(NULL),
+            _frames(NULL),
+            _frameIdx(0),
             _showBg(true),
             _showTex(false),
-            _image(NULL),
-            _frame(NULL)
+            _showBaseline(true)
     {}
 
     QRectF boundingRect() const override {
@@ -53,25 +57,26 @@ public:
         painter->setBrush(QBrush(Qt::darkCyan, Qt::Dense5Pattern));
         painter->drawRect(boundingRect());
 
-        if(_image && _frame){
+        if(_image && _frames){
+            const Frame& _frame = (*_frames)[_frameIdx];
             if (_showTex) {
                 for (unsigned int frameX = 0; frameX < _cellCountVert; frameX++) {
                     for (unsigned int frameY = 0; frameY < _cellCountHor; frameY++) {
-                        unsigned int pixX = _frame->x() - _globalOffsetX + frameX + _frame->dx();
-                        unsigned int pixY = _frame->y() - _globalOffsetY + frameY + _frame->dy();
+                        unsigned int pixX = _frame.x() - _globalOffsetX + frameX + _frame.dx();
+                        unsigned int pixY = _frame.y() - _globalOffsetY + frameY + _frame.dy();
                         _paintImagePixel(painter, frameX, frameY, pixX, pixY);
                     }
                 }
             } else {
-                for (unsigned int x = 0; x < _frame->w(); x++) {
-                    for (unsigned int y = 0; y < _frame->h(); y++) {
-                        unsigned int frameX = x + _globalOffsetX - _frame->dx();
-                        unsigned int frameY = y + _globalOffsetY - _frame->dy();
+                for (unsigned int x = 0; x < _frame.w(); x++) {
+                    for (unsigned int y = 0; y < _frame.h(); y++) {
+                        unsigned int frameX = x + _globalOffsetX - _frame.dx();
+                        unsigned int frameY = y + _globalOffsetY - _frame.dy();
                         if (frameX < 0 || frameY < 0 || frameX >= _cellCountHor || frameY >= _cellCountVert) {
                             continue;
                         }
-                        unsigned int pixX = _frame->x() + x;
-                        unsigned int pixY = _frame->y() + y;
+                        unsigned int pixX = _frame.x() + x;
+                        unsigned int pixY = _frame.y() + y;
                         _paintImagePixel(painter, frameX, frameY, pixX, pixY);
                     }
                 }
@@ -88,27 +93,42 @@ public:
             int offset_x = _cellSize * i;
             painter->drawLine(offset_x, 0, offset_x, _cellSize * _cellCountVert);
         }
-        if(_frame && _image && _showTex){
-            QPen pen(Qt::red,3);
+
+        if(_frames && _image){
+            const Frame& _frame = (*_frames)[_frameIdx];
+            QPen pen(Qt::green, 3);
             pen.setJoinStyle(Qt::MiterJoin);
             painter->setPen(pen);
             painter->setBrush(Qt::NoBrush);
-            int x = (_globalOffsetX - _frame->dx()) * _cellSize;
-            int y = (_globalOffsetY - _frame->dy()) * _cellSize;
-            int w = _frame->w() * _cellSize;
-            int h = _frame->h() * _cellSize;
-            painter->drawRect(x, y, w, h);
+            int x = (_globalOffsetX - _frame.dx()) * _cellSize;
+            int y = (_globalOffsetY - _frame.dy()) * _cellSize;
+            int w = _frame.w() * _cellSize;
+            int h = _frame.h() * _cellSize;
+            if (_showTex) {
+                painter->drawRect(x, y, w, h);
+            }
+            pen.setColor(Qt::red);
+            if (_showBaseline) {
+                painter->setPen(pen);
+                const Frame& frame = (*_frames)[0];
+                int x0 = (_globalOffsetX - frame.dx()) * _cellSize;
+                int y0 = (_globalOffsetY - frame.dy()) * _cellSize;
+                int w0 = frame.w() * _cellSize;
+                int h0 = frame.h() * _cellSize;
+                painter->drawLine(0, y0 + h0, _cellSize * _cellCountVert, y0 + h0);
+            }
         }
 
     }
 
-    void setFrame(Frame* frame) {
-        _frame = frame;
+    void setFrame(AnimInfo::Frames* frames, int index) {
+        _frames = frames;
+        _frameIdx = index;
         update();
     }
 
-    void setImageFrame(Image* image, Frame* frame) {
+    void setImageFrames(Image* image, AnimInfo::Frames* frames, int index) {
         _image = image;
-        setFrame(frame);
+        setFrame(frames, index);
     }
 };

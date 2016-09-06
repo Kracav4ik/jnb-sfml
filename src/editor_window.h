@@ -148,7 +148,7 @@ public:
 
     void refresh_anim() {
         if (animInfo.empty()) {
-            grid.setImageFrame(NULL, NULL);
+            grid.setImageFrames(NULL, NULL,0);
             return;
         }
         frameNumber->setMaximum(animInfo._frames.size() - 1);
@@ -156,7 +156,7 @@ public:
 
         TextureManager& manager = TextureManager::inst();
         Image& image = manager.get_image(animInfo._tex_name.c_str());
-        grid.setImageFrame(&image, &frame);
+        grid.setImageFrames(&image, &animInfo._frames, frameNumber->value());
 
         APPLY_ALL(SET_VALUE)
 
@@ -271,14 +271,14 @@ public slots:
 
     void on_unDo_clicked() {
         animInfo._frames = undoRedo.do_undo();
-        grid.setFrame(&currentFrame());
+        grid.setFrame(&animInfo._frames, frameNumber->value());
 
         refresh_anim();
     }
 
     void on_reDo_clicked() {
         animInfo._frames = undoRedo.do_redo();
-        grid.setFrame(&currentFrame());
+        grid.setFrame(&animInfo._frames, frameNumber->value());
 
         refresh_anim();
     }
@@ -288,6 +288,10 @@ public slots:
         grid.update();
     }
 
+    void on_showBaseline_stateChanged(int){
+        grid._showBaseline = showBaseline->isChecked();
+        grid.update();
+    }
     void on_showTex_stateChanged(int){
         grid._showTex = showTex->isChecked();
         grid.update();

@@ -9,6 +9,8 @@ void draw_rect(RenderWindow& window, Vector2f pos, Vector2f size, Color color, b
         block.setFillColor(Color::Transparent);
         block.setOutlineColor(color);
         block.setOutlineThickness(1);
+        block.setSize(size - Vector2f(2.f,2.f));
+        block.setPosition(pos + Vector2f(1.f,1.f));
     }
     window.draw(block);
 }

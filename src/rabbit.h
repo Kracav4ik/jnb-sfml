@@ -8,7 +8,7 @@
 
 using namespace sf;
 
-const Vector2f RABBIT_SIZE(32, 32);
+const Vector2f RABBIT_SIZE(24, 32);
 
 struct Rabbit : RenderableAutoregister {
     Params params;

@@ -196,7 +196,9 @@ public slots:
     }
 
     void anim_step() {
-        frameNumber->setValue((frameNumber->value() + 1) % animInfo._frames.size());
+        if (!animInfo.empty()) {
+            frameNumber->setValue((frameNumber->value() + 1) % animInfo._frames.size());
+        }
     }
 
     void on_saveFrame_clicked() {

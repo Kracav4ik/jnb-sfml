@@ -5,6 +5,7 @@
 
 #include "texture_manager.h"
 #include "frame_animation.h"
+#include "rabbit.h"
 
 class BackgroundGrid : public QGraphicsItem {
 private:
@@ -20,6 +21,7 @@ public:
     bool _showBg;
     bool _showTex;
     bool _showBaseline;
+    bool _showHitbox;
 
     explicit BackgroundGrid(int cellSize, int cellCountGor, int cellCountVert, int globalOffsetX, int globalOffsetY) :
             _cellSize(cellSize),
@@ -30,9 +32,10 @@ public:
             _image(NULL),
             _frames(NULL),
             _frameIdx(0),
-            _showBg(true),
+            _showBg(false),
             _showTex(false),
-            _showBaseline(true)
+            _showBaseline(false),
+            _showHitbox(false)
     {}
 
     QRectF boundingRect() const override {
@@ -100,8 +103,10 @@ public:
             pen.setJoinStyle(Qt::MiterJoin);
             painter->setPen(pen);
             painter->setBrush(Qt::NoBrush);
-            int x = (_globalOffsetX - _frame.dx()) * _cellSize;
-            int y = (_globalOffsetY - _frame.dy()) * _cellSize;
+            int rab_x = (_globalOffsetX) * _cellSize;
+            int rab_y = (_globalOffsetY) * _cellSize;
+            int x = rab_x - _frame.dx() * _cellSize;
+            int y = rab_y - _frame.dy() * _cellSize;
             int w = _frame.w() * _cellSize;
             int h = _frame.h() * _cellSize;
             if (_showTex) {
@@ -116,6 +121,11 @@ public:
                 int w0 = frame.w() * _cellSize;
                 int h0 = frame.h() * _cellSize;
                 painter->drawLine(0, y0 + h0, _cellSize * _cellCountVert, y0 + h0);
+            }
+            pen.setColor(Qt::magenta);
+            if (_showHitbox) {
+                painter->setPen(pen);
+                painter->drawRect(rab_x, rab_y, int(RABBIT_SIZE.x/2) * _cellSize, int(RABBIT_SIZE.y/2) * _cellSize);
             }
         }
 

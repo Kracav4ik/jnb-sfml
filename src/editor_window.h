@@ -135,6 +135,9 @@ public:
         load_anims();
 
         grid._showBg = showBg->isChecked();
+        grid._showTex = showTex->isChecked();
+        grid._showBaseline = showBaseline->isChecked();
+        grid._showHitbox = showHitbox->isChecked();
 
         scene.addItem(&grid);
         graphicsView->setScene(&scene);
@@ -296,6 +299,11 @@ public slots:
     }
     void on_showTex_stateChanged(int){
         grid._showTex = showTex->isChecked();
+        grid.update();
+    }
+
+    void on_showHitbox_stateChanged(int){
+        grid._showHitbox = showHitbox->isChecked();
         grid.update();
     }
 };

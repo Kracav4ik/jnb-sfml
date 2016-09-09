@@ -88,7 +88,17 @@
        <property name="bottomMargin">
         <number>4</number>
        </property>
-       <item row="17" column="0" colspan="2">
+       <item row="15" column="0" colspan="2">
+        <widget class="QCheckBox" name="showBaseline">
+         <property name="text">
+          <string>Show baseline</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="18" column="0" colspan="2">
         <widget class="QPushButton" name="unDo">
          <property name="text">
           <string>Undo</string>
@@ -161,7 +171,7 @@
          </property>
         </widget>
        </item>
-       <item row="20" column="1">
+       <item row="21" column="1">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -174,7 +184,7 @@
          </property>
         </spacer>
        </item>
-       <item row="19" column="0" colspan="2">
+       <item row="20" column="0" colspan="2">
         <widget class="QPushButton" name="reDo">
          <property name="text">
           <string>Redo</string>
@@ -294,7 +304,7 @@
          </property>
         </widget>
        </item>
-       <item row="22" column="0" colspan="2">
+       <item row="23" column="0" colspan="2">
         <widget class="QToolButton" name="startAnimation">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -316,7 +326,7 @@
          </property>
         </widget>
        </item>
-       <item row="16" column="0" colspan="2">
+       <item row="17" column="0" colspan="2">
         <widget class="QPushButton" name="saveFrame">
          <property name="text">
           <string>Save</string>
@@ -336,10 +346,10 @@
          </property>
         </widget>
        </item>
-       <item row="15" column="0" colspan="2">
-        <widget class="QCheckBox" name="showBaseline">
+       <item row="16" column="0" colspan="2">
+        <widget class="QCheckBox" name="showHitbox">
          <property name="text">
-          <string>Show baseline</string>
+          <string>Show hitbox</string>
          </property>
          <property name="checked">
           <bool>true</bool>

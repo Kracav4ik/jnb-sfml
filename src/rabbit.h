@@ -24,9 +24,15 @@ struct Rabbit : RenderableAutoregister {
 
     void jump();
 
+    void jump_pressed(bool is_pressed);
+
     void accel_left();
 
+    void left_pressed(bool is_pressed);
+
     void accel_right();
+
+    void right_pressed(bool is_pressed);
 
     bool can_jump() const;
 };

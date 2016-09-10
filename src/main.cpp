@@ -177,15 +177,9 @@ int main() {
                 }
             }
         }
-        if (Keyboard::isKeyPressed(Keyboard::W) && rabbit.can_jump()) {
-            rabbit.jump();
-        }
-        if (Keyboard::isKeyPressed(Keyboard::A)) {
-            rabbit.accel_left();
-        }
-        if (Keyboard::isKeyPressed(Keyboard::D)) {
-            rabbit.accel_right();
-        }
+        rabbit.jump_pressed(Keyboard::isKeyPressed(Keyboard::W));
+        rabbit.left_pressed(Keyboard::isKeyPressed(Keyboard::A));
+        rabbit.right_pressed(Keyboard::isKeyPressed(Keyboard::D));
 
         // process physics
         Params next_params = rabbit.params;

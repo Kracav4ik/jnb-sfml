@@ -39,3 +39,21 @@ void Rabbit::next_step(float elapsed) {
     _anim_rabbit.set_pos(params._position.x, params._position.y);
     _anim_rabbit.step(elapsed);
 }
+
+void Rabbit::right_pressed(bool is_pressed) {
+    if (is_pressed){
+        accel_right();
+    }
+}
+
+void Rabbit::left_pressed(bool is_pressed) {
+    if (is_pressed){
+        accel_left();
+    }
+}
+
+void Rabbit::jump_pressed(bool is_pressed) {
+    if (is_pressed && can_jump()){
+        jump();
+    }
+}

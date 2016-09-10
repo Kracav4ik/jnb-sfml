@@ -37,14 +37,21 @@ bool Rabbit::can_jump() const {
 }
 
 void Rabbit::next_step(float elapsed) {
+    bool something_press = false;
     if (_keybind.is_jump_presset() && can_jump()) {
         jump();
+        something_press = true;
     }
     if (_keybind.is_left_presset()) {
         accel_left();
+        something_press = true;
     }
     if (_keybind.is_right_presset()) {
         accel_right();
+        something_press = true;
+    }
+    if(!something_press && can_jump()){
+        params._speed.x = 0;
     }
 
     _anim_rabbit.set_pos(params._position.x, params._position.y);

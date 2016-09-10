@@ -28,9 +28,9 @@ struct HitInfo {
     }
 };
 
-Vector2f next_pos_hit_x(const FloatRect &rect, const Vector2f &old_pos, Vector2f next_pos, const Vector2f &delta_pos, bool& use) {
-    if (old_pos.x + CELL_SIZE.x <= rect.left) {
-        next_pos.x = rect.left - CELL_SIZE.x;
+Vector2f next_pos_hit_x(const FloatRect& rect, const Vector2f& old_pos, Vector2f next_pos, const Vector2f& delta_pos, const Vector2f& obj_size, bool& use) {
+    if (old_pos.x + obj_size.x <= rect.left) {
+        next_pos.x = rect.left - obj_size.x;
         float new_y = (next_pos.x - old_pos.x) * delta_pos.y / delta_pos.x;
         next_pos.y = old_pos.y + new_y;
 //        log("iti\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",next_pos.x - rect.left + CELL_SIZE.x, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
@@ -45,9 +45,9 @@ Vector2f next_pos_hit_x(const FloatRect &rect, const Vector2f &old_pos, Vector2f
     return next_pos;
 }
 
-Vector2f next_pos_hit_y(const FloatRect &rect, const Vector2f &old_pos, Vector2f next_pos, const Vector2f &delta_pos, bool& use) {
-    if (old_pos.y + CELL_SIZE.y <= rect.top) {
-        next_pos.y = rect.top - CELL_SIZE.y;
+Vector2f next_pos_hit_y(const FloatRect &rect, const Vector2f &old_pos, Vector2f next_pos, const Vector2f &delta_pos, const Vector2f& obj_size, bool& use) {
+    if (old_pos.y + obj_size.y <= rect.top) {
+        next_pos.y = rect.top - obj_size.y;
         float new_x = (next_pos.y - old_pos.y) * delta_pos.x / delta_pos.y;
         next_pos.x = old_pos.x + new_x;
 //        log("san\nmultiply = %f, delta_pos.y = %f, delta_pos.x = %f\nnext_pos.x = %f, next_pos.y = %f",rect.top - next_pos.y + CELL_SIZE.y, delta_pos.y, delta_pos.x, next_pos.x,next_pos.y);
@@ -68,6 +68,7 @@ float len2(const Vector2f& v) {
 
 Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vector2f& old_pos, const FloatRect& obj_rect, HitInfo& hit_info) {
     Vector2f next_pos(obj_rect.left, obj_rect.top);
+    Vector2f obj_size(obj_rect.width, obj_rect.height);
 //    draw_line(window, old_pos, next_pos, Color(255, 0, 0));
     std::vector<FloatRect> collided;
     static Color colors[] = {
@@ -80,15 +81,15 @@ Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vec
             Vector2f delta_pos = next_pos - old_pos;
             FloatRect rect = collided[i];
             FloatRect intersection;
-            FloatRect next_obj_rect(next_pos, CELL_SIZE);
+            FloatRect next_obj_rect(next_pos, obj_size);
             if (!rect.intersects(next_obj_rect, intersection)) {
                 continue;
             }
 //            draw_rect(window, Vector2f(rect.left, rect.top), CELL_SIZE, colors[i], false);
             bool use_x = true;
             bool use_y = true;
-            Vector2f next_pos_x = next_pos_hit_x(rect, old_pos, next_pos, delta_pos, use_x);
-            Vector2f next_pos_y = next_pos_hit_y(rect, old_pos, next_pos, delta_pos, use_y);
+            Vector2f next_pos_x = next_pos_hit_x(rect, old_pos, next_pos, delta_pos, obj_size, use_x);
+            Vector2f next_pos_y = next_pos_hit_y(rect, old_pos, next_pos, delta_pos, obj_size, use_y);
             if (!use_x) {
                 next_pos = next_pos_y;
                 hit_info.hit_y = true;
@@ -112,6 +113,7 @@ Vector2f collide_rect_pieces(RenderWindow& window, const Level& level, const Vec
 
 Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& old_pos, const FloatRect& obj_rect, HitInfo& hit_info){
     Vector2f next_pos(obj_rect.left, obj_rect.top);
+    Vector2f obj_size(obj_rect.width, obj_rect.height);
     Vector2f delta_pos = next_pos - old_pos;
     float len_delta = sqrtf(len2(delta_pos));
     Vector2f result = next_pos;
@@ -119,11 +121,8 @@ Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& 
     Vector2f norm_delta = delta_pos / float(count);
     Vector2f new_old_pos = old_pos;
 //    log("count is %d, len is %f\n", count, len_delta);
-    if (len_delta < 2) {
-//        log("fuck you\n");
-    }
     for(int _ = 0; _ < count; _ += 1 ){
-        result = collide_rect_pieces(window, level, new_old_pos, FloatRect(new_old_pos + norm_delta, CELL_SIZE), hit_info);
+        result = collide_rect_pieces(window, level, new_old_pos, FloatRect(new_old_pos + norm_delta, obj_size), hit_info);
         new_old_pos += norm_delta;
         if (hit_info.hit_x || hit_info.hit_y){
 //            log("break!\n");
@@ -260,7 +259,7 @@ int main() {
         Vector2f fixed_pos;
         if (mouse_debug) {
             HitInfo mouse_hit;
-            fixed_pos = collide_rect(window, level, mouse_click, FloatRect(mouse_pos, CELL_SIZE), mouse_hit);
+            fixed_pos = collide_rect(window, level, mouse_click, FloatRect(mouse_pos, RABBIT_SIZE), mouse_hit);
             if (mouse_hit.hit_x || mouse_hit.hit_y) {
                 log("hit_x : %s, hit_y : %s\n", mouse_hit.hit_x? "true":"false", mouse_hit.hit_y? "true":"false");
             }
@@ -277,9 +276,9 @@ int main() {
 
         // debug for collision
         if (mouse_debug) {
-            draw_rect(window, mouse_click, CELL_SIZE, Color(128, 128, 128), false);
-            draw_rect(window, mouse_pos, CELL_SIZE, Color(0, 0, 0), false);
-            draw_rect(window, fixed_pos, CELL_SIZE, Color(255, 0, 255), false);
+            draw_rect(window, mouse_click, RABBIT_SIZE, Color(128, 128, 128), false);
+            draw_rect(window, mouse_pos, RABBIT_SIZE, Color(0, 0, 0), false);
+            draw_rect(window, fixed_pos, RABBIT_SIZE, Color(255, 0, 255), false);
         }
 
         // end the current frame

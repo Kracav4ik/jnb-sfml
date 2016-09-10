@@ -5,6 +5,7 @@
 #include "params.h"
 #include "level.h"
 #include "render.h"
+#include "frame_animation.h"
 
 using namespace sf;
 
@@ -13,10 +14,13 @@ const Vector2f RABBIT_SIZE(24, 32);
 struct Rabbit : RenderableAutoregister {
     Params params;
     const Level& _level;
+    FrameAnim _anim_rabbit;
 
     Rabbit(const Level& level);
 
     void draw(RenderWindow& window) const;
+
+    void next_step(float(elapsed));
 
     void jump();
 

@@ -132,28 +132,6 @@ Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& 
     return result;
 }
 
-struct HardcodedRabbit : Animation, RenderableAutoregister {
-    int _x;
-    int _y;
-    bool _upper;
-
-    HardcodedRabbit(int x, int y, bool upper) : _x(x), _y(y), _upper(upper) {}
-
-    virtual void draw(RenderWindow &window) const {
-        Texture& tex = TextureManager::inst().get_texture("..\\data\\run_anim.png");
-        int w = 16;
-        int h = 20;
-        int dx = w * int(time*4);
-        int dy = _upper ? 0 : 32;
-        Sprite sprite;
-        sprite.setTexture(tex);
-        sprite.setTextureRect(IntRect(dx, dy, w, h));
-        sprite.setPosition(_x, _y);
-        sprite.setScale(4, 4);
-        window.draw(sprite);
-    }
-};
-
 int main() {
     RenderWindow  window(VideoMode(800, 512), "My window");
     RenderManager& render_manager = RenderManager::inst();
@@ -161,8 +139,6 @@ int main() {
     Level level;
     level.print();
     Rabbit rabbit(level);
-    HardcodedRabbit r1(50, 50, true);
-    HardcodedRabbit r2(600, 50, false);
     Vector2f gravity(0, GRAVITY);
     FrameAnim frame_anim(FilePath("anims\\r1_run_right.txt"), 100, 100, 10);
 
@@ -264,9 +240,8 @@ int main() {
                 log("hit_x : %s, hit_y : %s\n", mouse_hit.hit_x? "true":"false", mouse_hit.hit_y? "true":"false");
             }
         }
-        r1.step(elapsed);
-        r2.step(elapsed);
         frame_anim.step(elapsed);
+        rabbit.next_step(elapsed);
 
         // clear the window with black color
         window.clear(Color::Black);

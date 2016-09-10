@@ -70,6 +70,8 @@ struct FrameAnim : Animation, RenderableAutoregister {
 
     FrameAnim(const FilePath& path, int x, int y, float scale);
 
+    void set_pos(float x, float y);
+
     virtual void draw(RenderWindow& window) const override;
 };
 

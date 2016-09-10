@@ -9,7 +9,7 @@ FrameAnim::FrameAnim(const FilePath& path, int x, int y, float scale) :
         _scale(scale),
         _tex(NULL),
         animInfo(path) {
-    _tex = &TextureManager::inst().get_texture(animInfo._tex_name);
+        _tex = &TextureManager::inst().get_texture(animInfo._tex_name);
 }
 
 void FrameAnim::draw(RenderWindow& window) const {
@@ -23,6 +23,10 @@ void FrameAnim::draw(RenderWindow& window) const {
     window.draw(sprite);
 }
 
+void FrameAnim::set_pos(float x, float y) {
+    _x = x;
+    _y = y;
+}
 
 Frame::Frame(int x, int y, int w, int h, int dx, int dy) :
         pos(x, y),

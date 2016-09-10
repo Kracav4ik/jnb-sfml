@@ -8,6 +8,7 @@ void Rabbit::draw(RenderWindow& window) const {
         color = Color(128, 255, 128);
     }
     draw_rect(window, params.position(), RABBIT_SIZE, color);
+    _anim_rabbit.draw(window);
 }
 
 void Rabbit::jump() {
@@ -25,10 +26,16 @@ void Rabbit::accel_right() {
 }
 
 Rabbit::Rabbit(const Level& level)
-    : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE), _level(level)
+    : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE), _level(level), _anim_rabbit(FilePath("anims\\r1_run_right.txt"),0,0,2)
 {
 }
 
 bool Rabbit::can_jump() const {
     return _level.block_under_rect(params.get_rect());
+}
+
+void Rabbit::next_step(float elapsed) {
+
+    _anim_rabbit.set_pos(params._position.x, params._position.y);
+    _anim_rabbit.step(elapsed);
 }

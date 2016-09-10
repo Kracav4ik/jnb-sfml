@@ -138,7 +138,7 @@ int main() {
 
     Level level;
     level.print();
-    Rabbit rabbit(level);
+    Rabbit rabbit(level, RabbitKeybind(Keyboard::W, Keyboard::A, Keyboard::D));
     Vector2f gravity(0, GRAVITY);
     FrameAnim frame_anim(FilePath("anims\\r1_run_right.txt"), 100, 100, 10);
 
@@ -177,9 +177,7 @@ int main() {
                 }
             }
         }
-        rabbit.jump_pressed(Keyboard::isKeyPressed(Keyboard::W));
-        rabbit.left_pressed(Keyboard::isKeyPressed(Keyboard::A));
-        rabbit.right_pressed(Keyboard::isKeyPressed(Keyboard::D));
+        rabbit.next_step(elapsed);
 
         // process physics
         Params next_params = rabbit.params;

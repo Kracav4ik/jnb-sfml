@@ -25,8 +25,10 @@ void Rabbit::accel_right() {
     params._speed.x = 100;
 }
 
-Rabbit::Rabbit(const Level& level)
-    : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE), _level(level), _anim_rabbit(FilePath("anims\\r1_run_right.txt"),0,0,2)
+Rabbit::Rabbit(const Level& level,const RabbitKeybind& keybind)
+    : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE), _level(level),
+        _anim_rabbit(FilePath("anims\\r1_run_right.txt"),0,0,2),
+        _keybind(keybind)
 {
 }
 
@@ -35,6 +37,15 @@ bool Rabbit::can_jump() const {
 }
 
 void Rabbit::next_step(float elapsed) {
+    if (_keybind.is_jump_presset() && can_jump()) {
+        jump();
+    }
+    if (_keybind.is_left_presset()) {
+        accel_left();
+    }
+    if (_keybind.is_right_presset()) {
+        accel_right();
+    }
 
     _anim_rabbit.set_pos(params._position.x, params._position.y);
     _anim_rabbit.step(elapsed);
@@ -57,3 +68,23 @@ void Rabbit::jump_pressed(bool is_pressed) {
         jump();
     }
 }
+
+
+bool RabbitKeybind::is_jump_presset() {
+    return Keyboard::isKeyPressed(jump_key);
+
+}
+
+bool RabbitKeybind::is_left_presset() {
+    return Keyboard::isKeyPressed(left_key);
+}
+
+bool RabbitKeybind::is_right_presset() {
+    return Keyboard::isKeyPressed(right_key);
+}
+
+RabbitKeybind::RabbitKeybind(Keyboard::Key jump_key, Keyboard::Key left_key, Keyboard::Key right_key) :
+        jump_key(jump_key),
+        left_key(left_key),
+        right_key(right_key)
+{}

@@ -19,16 +19,21 @@ public:
     Keyboard::Key right_key;
     RabbitKeybind(Keyboard::Key jump_key, Keyboard::Key left_key, Keyboard::Key right_key);
 
-    bool is_jump_presset();
-    bool is_left_presset();
-    bool is_right_presset();
+    bool is_jump_pressed();
+    bool is_left_pressed();
+    bool is_right_pressed();
 };
 
 struct Rabbit : RenderableAutoregister {
     Params params;
     const Level& _level;
-    FrameAnim _anim_rabbit;
+    FrameAnim _anim_rabbit_stand_left ;
+    FrameAnim _anim_rabbit_stand_right;
+    FrameAnim _anim_rabbit_run_left;
+    FrameAnim _anim_rabbit_run_right;
+    FrameAnim* _current_anim;
     RabbitKeybind _keybind;
+    bool _is_left;
 
     Rabbit(const Level& level, const RabbitKeybind& _keybind);
 
@@ -38,15 +43,9 @@ struct Rabbit : RenderableAutoregister {
 
     void jump();
 
-    void jump_pressed(bool is_pressed);
-
     void accel_left();
 
-    void left_pressed(bool is_pressed);
-
     void accel_right();
-
-    void right_pressed(bool is_pressed);
 
     bool can_jump() const;
 };

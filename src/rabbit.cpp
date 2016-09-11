@@ -8,7 +8,7 @@ void Rabbit::draw(RenderWindow& window) const {
         color = Color(128, 255, 128);
     }
     draw_rect(window, params.position(), RABBIT_SIZE, color);
-    _anim_rabbit.draw(window);
+    _current_anim->draw(window);
 }
 
 void Rabbit::jump() {
@@ -18,17 +18,22 @@ void Rabbit::jump() {
 }
 
 void Rabbit::accel_left() {
-    params._speed.x = -100;
+    params._speed.x = -200;
 }
 
 void Rabbit::accel_right() {
-    params._speed.x = 100;
+    params._speed.x = 200;
 }
 
 Rabbit::Rabbit(const Level& level,const RabbitKeybind& keybind)
     : params(Vector2f(400, 300), Vector2f(), RABBIT_SIZE), _level(level),
-        _anim_rabbit(FilePath("anims\\r1_run_right.txt"),0,0,2),
-        _keybind(keybind)
+        _anim_rabbit_stand_left (FilePath("anims/r1_stand_left.txt"),0,0,2),
+        _anim_rabbit_stand_right(FilePath("anims/r1_stand_right.txt"),0,0,2),
+        _anim_rabbit_run_left (FilePath("anims/r1_run_left.txt"),0,0,2),
+        _anim_rabbit_run_right(FilePath("anims/r1_run_right.txt"),0,0,2),
+        _current_anim(&_anim_rabbit_stand_right),
+        _keybind(keybind),
+        _is_left(false)
 {
 }
 
@@ -37,56 +42,44 @@ bool Rabbit::can_jump() const {
 }
 
 void Rabbit::next_step(float elapsed) {
-    bool something_press = false;
-    if (_keybind.is_jump_presset() && can_jump()) {
+    bool left_or_right_pressed = false;
+    if (_keybind.is_jump_pressed() && can_jump()) {
         jump();
-        something_press = true;
     }
-    if (_keybind.is_left_presset()) {
+    if (_keybind.is_left_pressed()) {
+        _current_anim = &_anim_rabbit_run_left;
         accel_left();
-        something_press = true;
+        left_or_right_pressed = true;
+        _is_left = true;
     }
-    if (_keybind.is_right_presset()) {
+    if (_keybind.is_right_pressed()) {
+        _current_anim = &_anim_rabbit_run_right;
         accel_right();
-        something_press = true;
+        left_or_right_pressed = true;
+        _is_left = false;
     }
-    if(!something_press && can_jump()){
+    if(!left_or_right_pressed && can_jump()){
+        if(_is_left){
+            _current_anim = &_anim_rabbit_stand_left;
+        } else{
+            _current_anim = &_anim_rabbit_stand_right;
+        }
         params._speed.x = 0;
     }
-
-    _anim_rabbit.set_pos(params._position.x, params._position.y);
-    _anim_rabbit.step(elapsed);
+     _current_anim->set_pos(params._position.x, params._position.y);
+     _current_anim->step(elapsed);
 }
 
-void Rabbit::right_pressed(bool is_pressed) {
-    if (is_pressed){
-        accel_right();
-    }
-}
-
-void Rabbit::left_pressed(bool is_pressed) {
-    if (is_pressed){
-        accel_left();
-    }
-}
-
-void Rabbit::jump_pressed(bool is_pressed) {
-    if (is_pressed && can_jump()){
-        jump();
-    }
-}
-
-
-bool RabbitKeybind::is_jump_presset() {
+bool RabbitKeybind::is_jump_pressed() {
     return Keyboard::isKeyPressed(jump_key);
 
 }
 
-bool RabbitKeybind::is_left_presset() {
+bool RabbitKeybind::is_left_pressed() {
     return Keyboard::isKeyPressed(left_key);
 }
 
-bool RabbitKeybind::is_right_presset() {
+bool RabbitKeybind::is_right_pressed() {
     return Keyboard::isKeyPressed(right_key);
 }
 

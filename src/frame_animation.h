@@ -61,7 +61,7 @@ struct AnimInfo{
     void save(const FilePath& path);
 };
 
-struct FrameAnim : Animation, RenderableAutoregister {
+struct FrameAnim : Animation, Renderable {
     float _x;
     float _y;
     float _scale;

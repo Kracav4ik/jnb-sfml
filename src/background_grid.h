@@ -42,17 +42,21 @@ public:
         return QRectF(0, 0, _cellSize * _cellCountHor + 1, _cellSize * _cellCountVert + 1);
     }
 
-    void _paintImagePixel(QPainter* painter, unsigned int frameX, unsigned int frameY, unsigned int pixX, unsigned int pixY) const {
-        if (pixX < 0 || pixY < 0 || pixX >= _image->getSize().x || pixY >= _image->getSize().y){
-            return;
-        }
-        const Color& c = _image->getPixel(pixX, pixY);
+    void _paintPixel(QPainter* painter, int frameX, int frameY, const Color& c) const {
         Uint8 alpha = c.a;
         if(_showBg){
             alpha = 255;
         }
         painter->setBrush(QColor(c.r, c.g, c.b, alpha));
         painter->drawRect(_cellSize * frameX, _cellSize * frameY, _cellSize, _cellSize);
+    }
+
+    void _paintImagePixel(QPainter* painter, int frameX, int frameY, unsigned int pixX, unsigned int pixY) const {
+        if (pixX < 0 || pixY < 0 || pixX >= _image->getSize().x || pixY >= _image->getSize().y){
+            return;
+        }
+        const Color& c = _image->getPixel(pixX, pixY);
+        _paintPixel(painter, frameX, frameY, c);
     }
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override {
@@ -128,7 +132,6 @@ public:
                 painter->drawRect(rab_x, rab_y, int(RABBIT_SIZE.x/2) * _cellSize, int(RABBIT_SIZE.y/2) * _cellSize);
             }
         }
-
     }
 
     void setFrame(AnimInfo::Frames* frames, int index) {

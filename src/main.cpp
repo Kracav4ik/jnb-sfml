@@ -5,28 +5,13 @@
 #include "rabbit.h"
 #include "debug.h"
 #include "utils.h"
+#include "hitInfo.h"
 #include "render.h"
 #include "animation.h"
 #include "texture_manager.h"
 #include "frame_animation.h"
 
 using namespace sf;
-
-int GRAVITY = 1500;
-
-struct HitInfo {
-    HitInfo(){
-        reset();
-    }
-
-    bool hit_x;
-    bool hit_y;
-
-    void reset() {
-        hit_x = false;
-        hit_y = false;
-    }
-};
 
 Vector2f next_pos_hit_x(const FloatRect& rect, const Vector2f& old_pos, Vector2f next_pos, const Vector2f& delta_pos, const Vector2f& obj_size, bool& use) {
     if (old_pos.x + obj_size.x <= rect.left) {
@@ -138,9 +123,8 @@ int main() {
 
     Level level;
     level.print();
-    Rabbit rabbit(level, RabbitKeybind(Keyboard::W, Keyboard::A, Keyboard::D));
-    Vector2f gravity(0, GRAVITY);
-    FrameAnim frame_anim(FilePath("anims\\r1_run_right.txt"), 100, 100, 10);
+    Rabbit rabbit1(level, RabbitKeybind(Keyboard::W, Keyboard::A, Keyboard::D), Rabbit::WHITE);
+    Rabbit rabbit2(level, RabbitKeybind(Keyboard::Up, Keyboard::Left, Keyboard::Right), Rabbit::BROWN);
 
     window.setPosition(Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);
@@ -177,50 +161,12 @@ int main() {
                 }
             }
         }
-        rabbit.next_step(elapsed);
+        rabbit1.process_input(elapsed);
+        rabbit2.process_input(elapsed);
 
         // process physics
-        Params next_params = rabbit.params;
-        next_params._speed    += gravity * 0.5f     * elapsed;
-        next_params._position += next_params._speed * elapsed;
-        next_params._speed    += gravity * 0.5f     * elapsed;
-
-        HitInfo hit_info;
-        Vector2f fixed_position = collide_rect(window, level, rabbit.params.position(), next_params.get_rect(), hit_info);
-        if(rabbit.params.position() == fixed_position){
-//            log("Same vector from collision: (%f, %f) -> (%f, %f)\n", rabbit.params.position().x, rabbit.params.position().y, next_params.position().x, next_params.position().y);
-            Params next_partial = next_params;
-            next_partial._position.y = rabbit.params.position().y;
-            hit_info.reset();
-            Vector2f move_by_x = collide_rect(window, level, rabbit.params.position(), next_partial.get_rect(), hit_info);
-            if (rabbit.params.position() == move_by_x){
-                if (next_partial.position().x != rabbit.params.position().x) {
-//                    log("  Cannot move by x: (%f, %f) -> (%f, %f)\n", rabbit.params.position().x, rabbit.params.position().y, next_partial.position().x, next_partial.position().y);
-                }
-                next_partial = next_params;
-                next_partial._position.x = rabbit.params.position().x;
-                hit_info.reset();
-                fixed_position = collide_rect(window, level, rabbit.params.position(), next_partial.get_rect(), hit_info);
-                hit_info.hit_x = true;
-            } else {
-                hit_info.hit_y = true;
-                fixed_position = move_by_x;
-            }
-//            log("\n");
-        }
-
-        next_params._position = fixed_position;
-
-        if (hit_info.hit_x) {
-//            log("HIT X (%f, %f) -> (%f, %f)\n", rabbit.params.position().x, rabbit.params.position().y, next_params.position().x, next_params.position().y);
-            next_params._speed.x = 0;
-        }
-        if (hit_info.hit_y) {
-//            log("HIT Y (%f, %f) -> (%f, %f)\n", rabbit.params.position().x, rabbit.params.position().y, next_params.position().x, next_params.position().y);
-            next_params._speed.y = 0;
-        }
-
-        rabbit.params = next_params;
+        rabbit1.process_physics(elapsed, level, window);
+        rabbit2.process_physics(elapsed, level, window);
 
         // debug for collision
         Vector2f mouse_pos(Mouse::getPosition(window).x, Mouse::getPosition(window).y);
@@ -232,8 +178,6 @@ int main() {
                 log("hit_x : %s, hit_y : %s\n", mouse_hit.hit_x? "true":"false", mouse_hit.hit_y? "true":"false");
             }
         }
-        frame_anim.step(elapsed);
-        rabbit.next_step(elapsed);
 
         // clear the window with black color
         window.clear(Color::Black);

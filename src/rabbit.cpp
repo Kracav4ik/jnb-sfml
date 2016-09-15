@@ -60,8 +60,11 @@ bool Rabbit::can_jump() const {
     return _level.block_under_rect(params.get_rect());
 }
 
-void Rabbit::process_input(float elapsed) {
+void Rabbit::process_input(const Level& level) {
     bool left_or_right_pressed = false;
+    if (_keybind.is_respawn_pressed()) {
+        spawn_at(level.get_spawn_rect());
+    }
     if (_keybind.is_jump_pressed() && can_jump()) {
         jump();
     }
@@ -136,9 +139,12 @@ void Rabbit::process_physics(float elapsed, const Level& level, RenderWindow& wi
     _current_anim->step(elapsed);
 }
 
+void Rabbit::spawn_at(const FloatRect& rect) {
+    params._position = Vector2f(rect.left + (CELL_SIZE.x - RABBIT_SIZE.x)/2, rect.top);
+}
+
 bool RabbitKeybind::is_jump_pressed() {
     return Keyboard::isKeyPressed(jump_key);
-
 }
 
 bool RabbitKeybind::is_left_pressed() {
@@ -149,8 +155,13 @@ bool RabbitKeybind::is_right_pressed() {
     return Keyboard::isKeyPressed(right_key);
 }
 
-RabbitKeybind::RabbitKeybind(Keyboard::Key jump_key, Keyboard::Key left_key, Keyboard::Key right_key) :
+bool RabbitKeybind::is_respawn_pressed() {
+    return Keyboard::isKeyPressed(respawn_key);
+}
+
+RabbitKeybind::RabbitKeybind(Keyboard::Key jump_key, Keyboard::Key left_key, Keyboard::Key right_key, Keyboard::Key respawn_key) :
         jump_key(jump_key),
         left_key(left_key),
-        right_key(right_key)
+        right_key(right_key),
+        respawn_key(respawn_key)
 {}

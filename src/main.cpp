@@ -123,8 +123,8 @@ int main() {
 
     Level level;
     level.print();
-    Rabbit rabbit1(level, RabbitKeybind(Keyboard::W, Keyboard::A, Keyboard::D), Rabbit::WHITE);
-    Rabbit rabbit2(level, RabbitKeybind(Keyboard::Up, Keyboard::Left, Keyboard::Right), Rabbit::BROWN);
+    Rabbit rabbit1(level, RabbitKeybind(Keyboard::W, Keyboard::A, Keyboard::D, Keyboard::S), Rabbit::WHITE);
+    Rabbit rabbit2(level, RabbitKeybind(Keyboard::Up, Keyboard::Left, Keyboard::Right, Keyboard::Down), Rabbit::BROWN);
 
     window.setPosition(Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);
@@ -161,8 +161,8 @@ int main() {
                 }
             }
         }
-        rabbit1.process_input(elapsed);
-        rabbit2.process_input(elapsed);
+        rabbit1.process_input(level);
+        rabbit2.process_input(level);
 
         // process physics
         rabbit1.process_physics(elapsed, level, window);

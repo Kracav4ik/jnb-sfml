@@ -23,6 +23,8 @@ struct Level : RenderableAutoregister {
 
     void print();
 
+    FloatRect get_spawn_rect() const;
+
     bool intersects(const FloatRect& rect, std::vector<FloatRect>* vector=NULL) const;
 
     bool block_under_rect(const FloatRect &rect) const;

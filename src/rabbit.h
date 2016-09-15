@@ -20,11 +20,14 @@ public:
     Keyboard::Key jump_key;
     Keyboard::Key left_key;
     Keyboard::Key right_key;
-    RabbitKeybind(Keyboard::Key jump_key, Keyboard::Key left_key, Keyboard::Key right_key);
+    Keyboard::Key respawn_key;
+
+    RabbitKeybind(Keyboard::Key jump_key, Keyboard::Key left_key, Keyboard::Key right_key, Keyboard::Key respawn_key);
 
     bool is_jump_pressed();
     bool is_left_pressed();
     bool is_right_pressed();
+    bool is_respawn_pressed();
 };
 
 struct Rabbit : RenderableAutoregister {
@@ -47,7 +50,7 @@ public:
 
     void draw(RenderWindow& window) const;
 
-    void process_input(float(elapsed));
+    void process_input(const Level& level);
 
     void process_physics(float elapsed, const Level& level, RenderWindow& window);
 
@@ -58,6 +61,8 @@ public:
     void accel_right();
 
     bool can_jump() const;
+
+    void spawn_at(const FloatRect& rect);
 };
 
 #endif //JNB_SFML_RABBIT_H

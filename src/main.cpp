@@ -11,6 +11,8 @@
 #include "texture_manager.h"
 #include "frame_animation.h"
 
+static const int Y_COLLISION_GAP = 2;
+
 using namespace sf;
 
 Vector2f next_pos_hit_x(const FloatRect& rect, const Vector2f& old_pos, Vector2f next_pos, const Vector2f& delta_pos, const Vector2f& obj_size, bool& use) {
@@ -117,6 +119,21 @@ Vector2f collide_rect(RenderWindow& window, const Level& level, const Vector2f& 
     return result;
 }
 
+void collide_rabbits(Rabbit& r1, Rabbit& r2, float elapsed) {
+    if (r2.y() + Y_COLLISION_GAP < r1.y() && r1.y() <= r2.y() + RABBIT_SIZE.y) {
+        if(r2.x() - RABBIT_SIZE.x<= r1.x() && r1.x() <= r2.x()+ RABBIT_SIZE.x){
+            log("Rabbit 1 is dead\n  x1 %f,y1 %f,\n  x2 %f,y2 %f\n\n",r1.x(), r1.y(), r2.x(), r2.y());
+            r1.die();
+        }
+    }
+    if(r1.y() + Y_COLLISION_GAP < r2.y() && r2.y() <= r1.y() + RABBIT_SIZE.y){
+        if(r1.x() - RABBIT_SIZE.x<= r2.x() && r2.x() <= r1.x()+ RABBIT_SIZE.x){
+            log("Rabbit 2 is dead\n  x1 %f,y1 %f,\n  x2 %f,y2 %f\n\n",r1.x(), r1.y(), r2.x(), r2.y());
+            r2.die();
+        }
+    }
+}
+
 int main() {
     RenderWindow  window(VideoMode(800, 512), "My window");
     RenderManager& render_manager = RenderManager::inst();
@@ -125,6 +142,8 @@ int main() {
     level.print();
     Rabbit rabbit1(level, RabbitKeybind(Keyboard::W, Keyboard::A, Keyboard::D, Keyboard::S), Rabbit::WHITE);
     Rabbit rabbit2(level, RabbitKeybind(Keyboard::Up, Keyboard::Left, Keyboard::Right, Keyboard::Down), Rabbit::BROWN);
+    rabbit1.respawn();
+    rabbit2.respawn();
 
     window.setPosition(Vector2i(45, 50));
     window.setKeyRepeatEnabled(false);
@@ -161,12 +180,13 @@ int main() {
                 }
             }
         }
-        rabbit1.process_input(level);
-        rabbit2.process_input(level);
+        rabbit1.process_input();
+        rabbit2.process_input();
 
         // process physics
-        rabbit1.process_physics(elapsed, level, window);
-        rabbit2.process_physics(elapsed, level, window);
+        rabbit1.process_physics(elapsed, window);
+        rabbit2.process_physics(elapsed, window);
+        collide_rabbits(rabbit1, rabbit2, elapsed);
 
         // debug for collision
         Vector2f mouse_pos(Mouse::getPosition(window).x, Mouse::getPosition(window).y);

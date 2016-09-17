@@ -50,11 +50,13 @@ public:
 
     void draw(RenderWindow& window) const;
 
-    void process_input(const Level& level);
+    void process_input();
 
-    void process_physics(float elapsed, const Level& level, RenderWindow& window);
+    void process_physics(float elapsed, RenderWindow& window);
 
     void jump();
+
+    void die();
 
     void accel_left();
 
@@ -62,7 +64,14 @@ public:
 
     bool can_jump() const;
 
+    void respawn();
+
     void spawn_at(const FloatRect& rect);
+
+    float x() const;
+    float y() const;
+    float vx() const;
+    float vy() const;
 };
 
 #endif //JNB_SFML_RABBIT_H
